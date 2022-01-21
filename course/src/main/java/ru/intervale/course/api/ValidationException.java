@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.sql.SQLException;
+
 @ControllerAdvice
 public class ValidationException {
     @ExceptionHandler(ConstraintViolationException.class)
@@ -29,5 +31,10 @@ public class ValidationException {
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity findBookExc22(JsonProcessingException e) {
         return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity sqlException(SQLException e) {
+        return new ResponseEntity("Invalid sql.", HttpStatus.BAD_REQUEST);
     }
 }

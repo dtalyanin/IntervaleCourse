@@ -15,6 +15,7 @@ import javax.validation.constraints.Pattern;
 @JsonDeserialize(using = BookDeserializer.class)
 @Validated
 public class Book {
+    @Min(0)
     private final int ID;
     @Pattern(regexp = "\\d{3}-\\d-\\d{3}-\\d{5}-\\d", message = "Incorrect ISBN type XXX-X-XXX-XXXXX-X")
     private String isbn;
