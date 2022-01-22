@@ -1,20 +1,24 @@
 package ru.intervale.course.dao;
 
 import ru.intervale.course.model.Book;
-
+import ru.intervale.course.model.BookDTO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookDao {
 
+    private final ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
+
     public List<Book> getBooks() {
-        Connection connection = ConnectionCreator.createConnection();
+        Connection connection = connectionHandler.createConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
         List<Book> books = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
             String sql = "SELECT * FROM BOOKS";
-            ResultSet resultSet = statement.executeQuery(sql);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int id = resultSet.getInt("ID");
                 String isbn = resultSet.getString("ISBN");
@@ -28,21 +32,24 @@ public class BookDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        finally {
+            connectionHandler.closeConnection(connection);
+            connectionHandler.closeStatement(statement);
+            connectionHandler.closeResultSet(resultSet);
         }
         return books;
     }
 
     public Book getBookById(int id) {
         Book book = null;
-        Connection connection = ConnectionCreator.createConnection();
+        Connection connection = connectionHandler.createConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM BOOKS WHERE ID = " + id;
-            ResultSet resultSet = statement.executeQuery(sql);
+            String sql = "SELECT * FROM BOOKS WHERE ID = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 String isbn = resultSet.getString("ISBN");
@@ -56,61 +63,130 @@ public class BookDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        finally {
+            connectionHandler.closeConnection(connection);
+            connectionHandler.closeStatement(statement);
+            connectionHandler.closeResultSet(resultSet);
         }
         return book;
     }
 
-
     public int deleteBook(int id) {
-        Connection connection = ConnectionCreator.createConnection();
-        int res = 0;
+        Connection connection = connectionHandler.createConnection();
+        PreparedStatement statement = null;
+        int executingResult = -1;
         try {
-            Statement statement = connection.createStatement();
-            String sql = "DELETE FROM BOOKS WHERE ID = " + id;
-            res = statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            res = -1;
-        }
-        try {
-            connection.close();
+            String sql = "DELETE FROM BOOKS WHERE ID = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            executingResult = statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        finally {
+            connectionHandler.closeConnection(connection);
+            connectionHandler.closeStatement(statement);
+        }
+        return executingResult;
     }
 
     public int addBook(Book book) {
-        Connection connection = ConnectionCreator.createConnection();
-        int res = -1;
+        Connection connection = connectionHandler.createConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int executingResult = -1;
         try {
             String sql = "INSERT INTO BOOKS (ISBN, NAME, AUTHOR, PAGES, WEIGHT, PRICE) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, book.getIsbn());
-            preparedStatement.setString(2, book.getName());
-            preparedStatement.setString(3, book.getAuthor());
-            preparedStatement.setInt(4, book.getPageAmount());
-            preparedStatement.setInt(5, book.getWeight());
-            preparedStatement.setInt(6, book.getPrice());
-            preparedStatement.executeUpdate();
-            ResultSet gk = preparedStatement.getGeneratedKeys();
-            if (gk.next()) {
-                res = gk.getInt("ID");
+            statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, book.getIsbn());
+            statement.setString(2, book.getName());
+            statement.setString(3, book.getAuthor());
+            statement.setInt(4, book.getPageAmount());
+            statement.setInt(5, book.getWeight());
+            statement.setInt(6, book.getPrice());
+            statement.executeUpdate();
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                executingResult = resultSet.getInt("ID");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            connectionHandler.closeConnection(connection);
+            connectionHandler.closeStatement(statement);
+            connectionHandler.closeResultSet(resultSet);
+        }
+        return executingResult;
+    }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            res = -1;
-        }
+    public int editBook(BookDTO book) {
+        String update = "UPDATE BOOKS SET ";
+        Connection connection = connectionHandler.createConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int executingResult = -1;
         try {
-            connection.close();
+            StringBuilder sql = new StringBuilder(update);
+            if (book.getIsbn() != null) {
+                sql.append("ISBN = ?,");
+            }
+            if (book.getName() != null) {
+                sql.append("NAME = ?,");
+            }
+            if (book.getAuthor() != null) {
+                sql.append("AUTHOR = ?,");
+            }
+            if (book.getPageAmount() != null) {
+                sql.append("PAGES = ?,");
+            }
+            if (book.getWeight() != null) {
+                sql.append("WEIGHT = ?,");
+            }
+            if (book.getPrice() != null) {
+                sql.append("PRICE = ?,");
+            }
+            if (!update.equals(sql.toString())) {
+                sql.deleteCharAt(sql.length() - 1);
+                sql.append(" WHERE ID = ?");
+                PreparedStatement preparedStatement = connection.prepareStatement(String.valueOf(sql), Statement.RETURN_GENERATED_KEYS);
+                int index = 1;
+                if (book.getIsbn() != null) {
+                    preparedStatement.setString(index++, book.getIsbn());
+                }
+                if (book.getName() != null) {
+                    preparedStatement.setString(index++, book.getName());
+                }
+                if (book.getAuthor() != null) {
+                    preparedStatement.setString(index++, book.getAuthor());
+                }
+                if (book.getPageAmount() != null) {
+                    preparedStatement.setInt(index++, book.getPageAmount());
+                }
+                if (book.getWeight() != null) {
+                    preparedStatement.setInt(index++, book.getWeight());
+                }
+                if (book.getPrice() != null) {
+                    preparedStatement.setInt(index++, book.getPrice());
+                }
+                preparedStatement.setInt(index, book.getID());
+                executingResult = preparedStatement.executeUpdate();
+                resultSet = preparedStatement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    executingResult = resultSet.getInt("ID");
+                }
+            }
+            else {
+                executingResult = -999;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        finally {
+            connectionHandler.closeConnection(connection);
+            connectionHandler.closeStatement(statement);
+            connectionHandler.closeResultSet(resultSet);
+        }
+        return executingResult;
     }
 }

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.sql.SQLException;
-
 @ControllerAdvice
 public class ValidationException {
     @ExceptionHandler(ConstraintViolationException.class)
@@ -18,23 +16,18 @@ public class ValidationException {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity findBookException(MethodArgumentNotValidException e) {
+    public ResponseEntity findIncorrectArgument(MethodArgumentNotValidException e) {
         return new ResponseEntity("Incorrect argument to initialization.", HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity findBookExc(NullPointerException e) {
+    public ResponseEntity findInvalidData(NullPointerException e) {
         return new ResponseEntity("Invalid input data.", HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity findBookExc22(JsonProcessingException e) {
+    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
         return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity sqlException(SQLException e) {
-        return new ResponseEntity("Invalid sql.", HttpStatus.BAD_REQUEST);
     }
 }

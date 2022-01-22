@@ -6,19 +6,25 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.Library;
-import javax.validation.Valid;
+import ru.intervale.course.model.BookDTO;
 import javax.validation.constraints.*;
 import java.util.List;
 
 @Validated
 @RestController
 public class BookController {
-    Library library = Library.getInstance();
     BookDao bookDao = new BookDao();
     @GetMapping("/books")
-    public List<Book> getBooks() {
-        return bookDao.getBooks();
+    public ResponseEntity getBooks() {
+        List<Book> books = bookDao.getBooks();
+        ResponseEntity response;
+        if (books.size() != 0) {
+            response = new ResponseEntity(books, HttpStatus.OK);
+        }
+        else {
+            response = new ResponseEntity("No data found.", HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
 
     @GetMapping("/book")
@@ -28,42 +34,56 @@ public class BookController {
             return new ResponseEntity(book, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity("Incorrect ID", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/edit")
-    public ResponseEntity editBook(@Valid @RequestBody Book book) {
-        library.addBook(book);
-        return new ResponseEntity(book,HttpStatus.ACCEPTED);
-    }
-
-    @PutMapping("/add")
-    public ResponseEntity addBook(@Valid @RequestBody Book book) {
-        int addingResult = bookDao.addBook(book);
-        ResponseEntity responseEntity;
-        if (addingResult != 0) {
-            responseEntity = new ResponseEntity("Book " + addingResult + " added to library", HttpStatus.OK);
+    public ResponseEntity editBook(@Validated @RequestBody BookDTO book) {
+        int executingResult = bookDao.editBook(book);
+        ResponseEntity response;
+        if (executingResult > 0) {
+            response = new ResponseEntity("Book with ID = " + executingResult + " changed.", HttpStatus.OK);
+        }
+        else if (executingResult == 0){
+            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
+        }
+        else if (executingResult == -999){
+            response = new ResponseEntity("No fields to edit.", HttpStatus.BAD_REQUEST);
         }
         else {
-            responseEntity = new ResponseEntity("Incorrect ID", HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
         }
-        return responseEntity;
+        return response;
+    }
+//
+    @PutMapping("/add")
+    public ResponseEntity addBook(@Validated @RequestBody Book book) {
+        int addingResult = bookDao.addBook(book);
+        ResponseEntity response;
+        if (addingResult > 0) {
+            response = new ResponseEntity("Book added successfully, ID = " + addingResult, HttpStatus.OK);
+        }
+        else {
+            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return response;
 
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteBook(@RequestParam(value = "id") @Min(value = 1) int id) {
-        if (bookDao.deleteBook(id) != 0) {
-            library.deleteBook(id);
-            return new ResponseEntity("Book with ID = " + id + " removed from library", HttpStatus.OK);
+        int deletingResult = bookDao.deleteBook(id);
+        ResponseEntity response;
+        if (deletingResult > 0) {
+            response = new ResponseEntity("Book with ID = " + id + " deleted.", HttpStatus.OK);
+        }
+        else if (deletingResult == 0){
+            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
         }
         else {
-            return new ResponseEntity("Incorrect ID", HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
         }
-    }
-
-    private boolean containsId(int id) {
-        return library.getBooks().containsKey(id);
+        return response;
     }
 }
