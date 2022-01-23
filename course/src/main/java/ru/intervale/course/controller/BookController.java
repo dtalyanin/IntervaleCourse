@@ -45,24 +45,21 @@ public class BookController {
         if (executingResult > 0) {
             response = new ResponseEntity("Book with ID = " + executingResult + " changed.", HttpStatus.OK);
         }
-        else if (executingResult == 0){
-            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
-        }
-        else if (executingResult == -999){
+        else if (executingResult == -999) {
             response = new ResponseEntity("No fields to edit.", HttpStatus.BAD_REQUEST);
         }
         else {
-            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
+            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
         }
         return response;
     }
-//
+
     @PutMapping("/add")
     public ResponseEntity addBook(@Validated @RequestBody Book book) {
         int addingResult = bookDao.addBook(book);
         ResponseEntity response;
-        if (addingResult > 0) {
-            response = new ResponseEntity("Book added successfully, ID = " + addingResult, HttpStatus.OK);
+        if (addingResult != 0) {
+            response = new ResponseEntity("Book added successfully.", HttpStatus.OK);
         }
         else {
             response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
@@ -75,14 +72,11 @@ public class BookController {
     public ResponseEntity deleteBook(@RequestParam(value = "id") @Min(value = 1) int id) {
         int deletingResult = bookDao.deleteBook(id);
         ResponseEntity response;
-        if (deletingResult > 0) {
+        if (deletingResult !=0) {
             response = new ResponseEntity("Book with ID = " + id + " deleted.", HttpStatus.OK);
         }
-        else if (deletingResult == 0){
-            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
-        }
         else {
-            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
+            response = new ResponseEntity("Book with ID = " + id + " doesn’t exist.", HttpStatus.BAD_REQUEST);
         }
         return response;
     }

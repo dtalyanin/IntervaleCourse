@@ -1,192 +1,95 @@
 package ru.intervale.course.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
-import java.sql.*;
+import ru.intervale.course.model.BookMapper;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookDao {
 
-    private final ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
+@ComponentScan
+@PropertySource(value = { "classpath:application.properties" })
+public class BookDao {
+    @Autowired
+    JdbcTemplate template = new JdbcTemplate(mysqlDataSource());
 
     public List<Book> getBooks() {
-        Connection connection = connectionHandler.createConnection();
-        Statement statement = null;
-        ResultSet resultSet = null;
-        List<Book> books = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM BOOKS";
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                int id = resultSet.getInt("ID");
-                String isbn = resultSet.getString("ISBN");
-                String name = resultSet.getString("NAME");
-                String author = resultSet.getString("AUTHOR");
-                int pageAmount = resultSet.getInt("PAGES");
-                int weight = resultSet.getInt("WEIGHT");
-                int price = resultSet.getInt("PRICE");
-                books.add(new Book(id, isbn, name, author, pageAmount, weight, price));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            connectionHandler.closeConnection(connection);
-            connectionHandler.closeStatement(statement);
-            connectionHandler.closeResultSet(resultSet);
-        }
-        return books;
+        String sql = "SELECT * FROM BOOKS";
+        return template.query(sql, new BookMapper());
     }
 
     public Book getBookById(int id) {
-        Book book = null;
-        Connection connection = connectionHandler.createConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            String sql = "SELECT * FROM BOOKS WHERE ID = ?";
-            statement = connection.prepareStatement(sql);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            if (resultSet.isBeforeFirst()) {
-                resultSet.next();
-                String isbn = resultSet.getString("ISBN");
-                String name = resultSet.getString("NAME");
-                String author = resultSet.getString("AUTHOR");
-                int pageAmount = resultSet.getInt("PAGES");
-                int weight = resultSet.getInt("WEIGHT");
-                int price = resultSet.getInt("PRICE");
-                book = new Book(id, isbn, name, author, pageAmount, weight, price);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            connectionHandler.closeConnection(connection);
-            connectionHandler.closeStatement(statement);
-            connectionHandler.closeResultSet(resultSet);
-        }
-        return book;
+        String sql = "SELECT * FROM BOOKS WHERE ID = ?";
+        return template.queryForObject(sql, new BookMapper(), new Object[] {id});
     }
 
     public int deleteBook(int id) {
-        Connection connection = connectionHandler.createConnection();
-        PreparedStatement statement = null;
-        int executingResult = -1;
-        try {
-            String sql = "DELETE FROM BOOKS WHERE ID = ?";
-            statement = connection.prepareStatement(sql);
-            statement.setInt(1, id);
-            executingResult = statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            connectionHandler.closeConnection(connection);
-            connectionHandler.closeStatement(statement);
-        }
-        return executingResult;
+        String sql = "DELETE FROM BOOKS WHERE ID = ?";
+        return template.update(sql, id);
     }
 
     public int addBook(Book book) {
-        Connection connection = connectionHandler.createConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        int executingResult = -1;
-        try {
-            String sql = "INSERT INTO BOOKS (ISBN, NAME, AUTHOR, PAGES, WEIGHT, PRICE) VALUES (?, ?, ?, ?, ?, ?)";
-            statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, book.getIsbn());
-            statement.setString(2, book.getName());
-            statement.setString(3, book.getAuthor());
-            statement.setInt(4, book.getPageAmount());
-            statement.setInt(5, book.getWeight());
-            statement.setInt(6, book.getPrice());
-            statement.executeUpdate();
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                executingResult = resultSet.getInt("ID");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            connectionHandler.closeConnection(connection);
-            connectionHandler.closeStatement(statement);
-            connectionHandler.closeResultSet(resultSet);
-        }
-        return executingResult;
+        String sql = "INSERT INTO BOOKS (ISBN, NAME, AUTHOR, PAGES, WEIGHT, PRICE) VALUES (?, ?, ?, ?, ?, ?)";
+        return template.update(sql, book.getIsbn(), book.getName(), book.getAuthor(), book.getPageAmount(),
+                book.getWeight(), book.getPrice());
     }
 
     public int editBook(BookDTO book) {
         String update = "UPDATE BOOKS SET ";
-        Connection connection = connectionHandler.createConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        int executingResult = -1;
-        try {
-            StringBuilder sql = new StringBuilder(update);
-            if (book.getIsbn() != null) {
-                sql.append("ISBN = ?,");
-            }
-            if (book.getName() != null) {
-                sql.append("NAME = ?,");
-            }
-            if (book.getAuthor() != null) {
-                sql.append("AUTHOR = ?,");
-            }
-            if (book.getPageAmount() != null) {
-                sql.append("PAGES = ?,");
-            }
-            if (book.getWeight() != null) {
-                sql.append("WEIGHT = ?,");
-            }
-            if (book.getPrice() != null) {
-                sql.append("PRICE = ?,");
-            }
-            if (!update.equals(sql.toString())) {
-                sql.deleteCharAt(sql.length() - 1);
-                sql.append(" WHERE ID = ?");
-                PreparedStatement preparedStatement = connection.prepareStatement(String.valueOf(sql), Statement.RETURN_GENERATED_KEYS);
-                int index = 1;
-                if (book.getIsbn() != null) {
-                    preparedStatement.setString(index++, book.getIsbn());
-                }
-                if (book.getName() != null) {
-                    preparedStatement.setString(index++, book.getName());
-                }
-                if (book.getAuthor() != null) {
-                    preparedStatement.setString(index++, book.getAuthor());
-                }
-                if (book.getPageAmount() != null) {
-                    preparedStatement.setInt(index++, book.getPageAmount());
-                }
-                if (book.getWeight() != null) {
-                    preparedStatement.setInt(index++, book.getWeight());
-                }
-                if (book.getPrice() != null) {
-                    preparedStatement.setInt(index++, book.getPrice());
-                }
-                preparedStatement.setInt(index, book.getID());
-                executingResult = preparedStatement.executeUpdate();
-                resultSet = preparedStatement.getGeneratedKeys();
-                if (resultSet.next()) {
-                    executingResult = resultSet.getInt("ID");
-                }
-            }
-            else {
-                executingResult = -999;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        int executingResult = -999;
+        List fields = new ArrayList();
+        StringBuilder sql = new StringBuilder(update);
+        if (book.getIsbn() != null) {
+            sql.append("ISBN = ?,");
+            fields.add(book.getIsbn());
         }
-        finally {
-            connectionHandler.closeConnection(connection);
-            connectionHandler.closeStatement(statement);
-            connectionHandler.closeResultSet(resultSet);
+        if (book.getName() != null) {
+            sql.append("NAME = ?,");
+            fields.add(book.getName());
+        }
+        if (book.getAuthor() != null) {
+            sql.append("AUTHOR = ?,");
+            fields.add(book.getAuthor());
+        }
+        if (book.getPageAmount() != null) {
+            sql.append("PAGES = ?,");
+            fields.add(book.getPageAmount());
+        }
+        if (book.getWeight() != null) {
+            sql.append("WEIGHT = ?,");
+            fields.add(book.getWeight());
+        }
+        if (book.getPrice() != null) {
+            sql.append("PRICE = ?,");
+            fields.add(book.getPrice());
+        }
+        if (!update.equals(sql.toString())) {
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" WHERE ID = ?");
+            fields.add(book.getID());
+            executingResult = template.update(String.valueOf(sql),fields.toArray());
+            if (executingResult != 0) {
+                executingResult = book.getID();
+            }
         }
         return executingResult;
+    }
+
+    @Bean
+    private DataSource mysqlDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:" + System.getProperty("user.dir") + "/src/main/java/ru/intervale/course/db/db");
+        dataSource.setUsername("admin");
+        dataSource.setPassword("root");
+        return dataSource;
     }
 }

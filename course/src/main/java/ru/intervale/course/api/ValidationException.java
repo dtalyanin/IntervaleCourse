@@ -1,6 +1,7 @@
 package ru.intervale.course.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,5 +30,10 @@ public class ValidationException {
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
         return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity cameIncorrectID(EmptyResultDataAccessException e) {
+        return new ResponseEntity("No data found for ID.", HttpStatus.BAD_REQUEST);
     }
 }
