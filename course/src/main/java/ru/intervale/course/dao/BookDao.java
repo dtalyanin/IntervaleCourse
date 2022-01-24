@@ -2,8 +2,6 @@ package ru.intervale.course.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import ru.intervale.course.model.Book;
@@ -14,12 +12,9 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@ComponentScan
-@PropertySource(value = { "classpath:application.properties" })
 public class BookDao {
     @Autowired
-    JdbcTemplate template = new JdbcTemplate(mysqlDataSource());
+    JdbcTemplate template = new JdbcTemplate(getDataSource());
 
     public List<Book> getBooks() {
         String sql = "SELECT * FROM BOOKS";
@@ -84,10 +79,10 @@ public class BookDao {
     }
 
     @Bean
-    private DataSource mysqlDataSource() {
+    private DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:" + System.getProperty("user.dir") + "/src/main/java/ru/intervale/course/db/db");
+        dataSource.setUrl("jdbc:h2:./src/main/java/ru/intervale/course/db/db");
         dataSource.setUsername("admin");
         dataSource.setPassword("root");
         return dataSource;

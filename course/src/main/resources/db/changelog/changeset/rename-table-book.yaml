@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: rename-table-book
+      author: Dmitry
+      changes:
+        - renameTable:
+            newTableName: books
+            oldTableName: book

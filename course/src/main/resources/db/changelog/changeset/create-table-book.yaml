@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-book
+      author: Dmitry
+      changes:
+        - createTable:
+            tableName: Book
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: isbn
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: author
+                  type: varchar(255)
+              - column:
+                  name: pages
+                  type: int
+              - column:
+                  name: weight
+                  type: int
+              - column:
+                  name: price
+                  type: int
