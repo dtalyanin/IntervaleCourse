@@ -1,5 +1,6 @@
 package ru.intervale.course.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,9 @@ import java.util.List;
 @Validated
 @RestController
 public class BookController {
-    BookDao bookDao = new BookDao();
+    @Autowired
+    BookDao bookDao;
+
     @GetMapping("/books")
     public ResponseEntity getBooks() {
         List<Book> books = bookDao.getBooks();

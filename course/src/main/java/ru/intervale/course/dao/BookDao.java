@@ -1,20 +1,18 @@
 package ru.intervale.course.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Repository;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
 import ru.intervale.course.model.BookMapper;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class BookDao {
     @Autowired
-    JdbcTemplate template = new JdbcTemplate(getDataSource());
+    JdbcTemplate template;
 
     public List<Book> getBooks() {
         String sql = "SELECT * FROM BOOKS";
@@ -76,15 +74,5 @@ public class BookDao {
             }
         }
         return executingResult;
-    }
-
-    @Bean
-    private DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:./src/main/java/ru/intervale/course/db/db");
-        dataSource.setUsername("admin");
-        dataSource.setPassword("root");
-        return dataSource;
     }
 }
