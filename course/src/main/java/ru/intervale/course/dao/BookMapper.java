@@ -1,6 +1,7 @@
-package ru.intervale.course.model;
+package ru.intervale.course.dao;
 
 import org.springframework.jdbc.core.RowMapper;
+import ru.intervale.course.model.Book;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

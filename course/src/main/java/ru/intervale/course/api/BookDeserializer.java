@@ -21,7 +21,6 @@ public class BookDeserializer extends StdDeserializer<Book> {
     @Override
     public Book deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         JsonNode node = p.getCodec().readTree(p);
-        Book book;
         String isbn = node.get("isbn").asText();
         String name = node.get("name").asText();
         String author = node.get("author").asText();

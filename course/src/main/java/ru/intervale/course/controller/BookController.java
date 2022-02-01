@@ -1,13 +1,14 @@
 package ru.intervale.course.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.model.BookDto;
 import javax.validation.constraints.*;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 public class BookController {
     @Autowired
-    BookDao bookDao;
+    private BookDao bookDao;
 
     @GetMapping("/books")
     public ResponseEntity getBooks() {
@@ -33,16 +34,12 @@ public class BookController {
     @GetMapping("/book")
     public ResponseEntity getBookById(@RequestParam(value = "id") @Min(value = 1) int id) {
         Book book = bookDao.getBookById(id);
-        if (book != null) {
-            return new ResponseEntity(book, HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity(book, HttpStatus.OK);
+
     }
 
     @PostMapping("/edit")
-    public ResponseEntity editBook(@Validated @RequestBody BookDTO book) {
+    public ResponseEntity editBook(@Validated @RequestBody BookDto book) {
         int executingResult = bookDao.editBook(book);
         ResponseEntity response;
         if (executingResult > 0) {
@@ -68,7 +65,6 @@ public class BookController {
             response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
         }
         return response;
-
     }
 
     @DeleteMapping("/delete")

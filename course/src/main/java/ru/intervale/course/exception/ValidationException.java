@@ -1,4 +1,4 @@
-package ru.intervale.course.api;
+package ru.intervale.course.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.dao.EmptyResultDataAccessException;

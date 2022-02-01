@@ -3,10 +3,12 @@ package ru.intervale.course.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.validation.annotation.Validated;
 import ru.intervale.course.api.BookDeserializer;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 
@@ -23,10 +25,13 @@ public class Book {
     private String name;
     @Pattern(regexp = "\\p{IsAlphabetic}{1,}\\.(\\p{IsAlphabetic}{1,}\\.)? \\p{IsAlphabetic}{1,}", message = "Incorrect author name")
     private String author;
+    @NotNull
     @Min(1)
     private int pageAmount;
+    @NotNull
     @Min(1)
     private int weight;
+    @NotNull
     @Min(0)
     private int price;
 }

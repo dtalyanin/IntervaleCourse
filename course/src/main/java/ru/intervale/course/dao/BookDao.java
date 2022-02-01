@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.BookDTO;
-import ru.intervale.course.model.BookMapper;
+import ru.intervale.course.model.BookDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class BookDao {
     @Autowired
-    JdbcTemplate template;
+    private JdbcTemplate template;
 
     public List<Book> getBooks() {
         String sql = "SELECT * FROM BOOKS";
@@ -35,7 +35,7 @@ public class BookDao {
                 book.getWeight(), book.getPrice());
     }
 
-    public int editBook(BookDTO book) {
+    public int editBook(BookDto book) {
         String update = "UPDATE BOOKS SET ";
         int executingResult = -999;
         List fields = new ArrayList();
