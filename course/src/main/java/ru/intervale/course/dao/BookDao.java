@@ -24,6 +24,11 @@ public class BookDao {
         return template.queryForObject(sql, new BookMapper(), new Object[] {id});
     }
 
+    public List<Book> getBooksByAuthor(String author) {
+        String sql = "SELECT * FROM BOOKS WHERE LOWER(AUTHOR) LIKE LOWER(?)";
+        return template.query(sql, new BookMapper(), new String[] {'%' + author + '%'});
+    }
+
     public int deleteBook(int id) {
         String sql = "DELETE FROM BOOKS WHERE ID = ?";
         return template.update(sql, id);

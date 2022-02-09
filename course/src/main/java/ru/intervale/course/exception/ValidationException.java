@@ -21,16 +21,16 @@ public class ValidationException {
         return new ResponseEntity("Incorrect argument to initialization.", HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity findInvalidData(NullPointerException e) {
-        return new ResponseEntity("Invalid input data.", HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(NullPointerException.class)
+//    public ResponseEntity findInvalidData(NullPointerException e) {
+//        return new ResponseEntity("Invalid input data.", HttpStatus.BAD_REQUEST);
+//    }
 
 
-    @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
-        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(JsonProcessingException.class)
+//    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
+//        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity cameIncorrectID(EmptyResultDataAccessException e) {

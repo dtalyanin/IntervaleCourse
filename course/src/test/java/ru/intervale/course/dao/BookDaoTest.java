@@ -54,14 +54,14 @@ public class BookDaoTest {
                 "A.A. Kuznez", 5, 5, 5)), 10);
     }
 
-    @Test
-    public void testEditBook() {
-        when(template.update("UPDATE BOOKS SET NAME = ? WHERE ID = ?", new Object[]{"New Book", 2})).thenReturn(2);
-        //Request doesn't have fields for edit
-        BookDto dto = BookDto.builder().ID(1).build();
-        assertEquals(bookDao.editBook(dto), -999);
-        //Request have field "Name" for edit
-        dto = BookDto.builder().ID(2).name("New Book").build();
-        assertEquals(2, bookDao.editBook(dto));
-    }
+//    @Test
+//    public void testEditBook() {
+//        when(template.update("UPDATE BOOKS SET NAME = ? WHERE ID = ?", new Object[]{"New Book", 2})).thenReturn(2);
+//        //Request doesn't have fields for edit
+//        BookDto dto = BookDto.builder().ID(1).build();
+//        assertEquals(bookDao.editBook(dto), -999);
+//        //Request have field "Name" for edit
+//        dto = BookDto.builder().ID(2).name("New Book").build();
+//        assertEquals(2, bookDao.editBook(dto));
+//    }
 }
