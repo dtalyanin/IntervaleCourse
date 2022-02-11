@@ -4,10 +4,8 @@ import lombok.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
-@Data
 @Builder
 @Getter
-
 public class BookDto {
     @NonNull
     @Min(1)
