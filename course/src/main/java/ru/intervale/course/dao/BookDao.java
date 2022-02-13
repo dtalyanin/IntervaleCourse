@@ -3,8 +3,11 @@ package ru.intervale.course.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.intervale.course.model.mapper.BookMapper;
+import ru.intervale.course.integration.model.mapper.WorkMapper;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
+import ru.intervale.course.integration.model.Work;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,11 @@ public class BookDao {
     public List<Book> getBooksByAuthor(String author) {
         String sql = "SELECT * FROM BOOKS WHERE LOWER(AUTHOR) LIKE LOWER(?)";
         return template.query(sql, new BookMapper(), new String[] {'%' + author + '%'});
+    }
+
+    public List<Work> getBooksByAuthorAsWork(String author) {
+        String sql = "SELECT * FROM BOOKS WHERE LOWER(AUTHOR) LIKE LOWER(?)";
+        return template.query(sql, new WorkMapper(), new String[] {'%' + author + '%'});
     }
 
     public int deleteBook(int id) {
@@ -73,7 +81,7 @@ public class BookDao {
             sql.deleteCharAt(sql.length() - 1);
             sql.append(" WHERE ID = ?");
             fields.add(book.getID());
-            executingResult = template.update(String.valueOf(sql),fields.toArray());
+            executingResult = template.update(String.valueOf(sql), fields.toArray());
             if (executingResult != 0) {
                 executingResult = book.getID();
             }

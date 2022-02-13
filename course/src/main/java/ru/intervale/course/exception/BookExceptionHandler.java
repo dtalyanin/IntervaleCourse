@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import ru.intervale.course.integration.exception.OpenLibraryException;
 
 @ControllerAdvice
-public class ValidationException {
+public class BookExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity findValidationException(ConstraintViolationException e) {
         return new ResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -21,19 +22,24 @@ public class ValidationException {
         return new ResponseEntity("Incorrect argument to initialization.", HttpStatus.FORBIDDEN);
     }
 
-//    @ExceptionHandler(NullPointerException.class)
-//    public ResponseEntity findInvalidData(NullPointerException e) {
-//        return new ResponseEntity("Invalid input data.", HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity findInvalidData(NullPointerException e) {
+        return new ResponseEntity("Invalid input data.", HttpStatus.BAD_REQUEST);
+    }
 
 
-//    @ExceptionHandler(JsonProcessingException.class)
-//    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
-//        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(JsonProcessingException.class)
+    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
+        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity cameIncorrectID(EmptyResultDataAccessException e) {
         return new ResponseEntity("No data found for ID.", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OpenLibraryException.class)
+    public ResponseEntity getBadResponseFromOpenLibrary(OpenLibraryException e) {
+        return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
     }
 }

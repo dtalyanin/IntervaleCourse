@@ -1,4 +1,4 @@
-package ru.intervale.course.api;
+package ru.intervale.course.model.deserializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

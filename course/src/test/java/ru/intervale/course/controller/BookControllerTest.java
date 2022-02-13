@@ -1,8 +1,8 @@
 package ru.intervale.course.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,13 +58,11 @@ public class BookControllerTest {
     @Test
     public void testGetBookById() throws Exception {
         when(bookDao.getBookById(1)).thenReturn(book);
-        when(bookDao.getBookById(2)).thenThrow(EmptyResultDataAccessException.class);
+        when(bookDao.getBookById(8)).thenThrow(EmptyResultDataAccessException.class);
         //when book with ID is found in DB
         assertEquals(new ResponseEntity(book, HttpStatus.OK), bookController.getBookById(1));
         //when book with ID isn't found in DB
-        assertThrows(EmptyResultDataAccessException.class, () -> bookController.getBookById(2));
-        mockMvc.perform(get("/book?id=2")).andExpect(status().isBadRequest()).andExpect(content().
-                string("No data found for ID."));
+        assertThrows(EmptyResultDataAccessException.class, () -> bookController.getBookById(8));
         //request with invalid argument
         mockMvc.perform(get("/book?id=-100")).andExpect(status().isForbidden()).andExpect(content().
                 string("getBookById.id: must be greater than or equal to 1"));

@@ -1,11 +1,11 @@
-package ru.intervale.course.model;
+package ru.intervale.course.integration.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Data;
-import ru.intervale.course.api.OpenLibraryBookDeserializer;
-import ru.intervale.course.api.OpenLibraryBookSerializer;
+import ru.intervale.course.integration.model.deserializer.OpenLibraryBookDeserializer;
+import ru.intervale.course.integration.model.serializer.OpenLibraryBookSerializer;
 
 import java.util.List;
 

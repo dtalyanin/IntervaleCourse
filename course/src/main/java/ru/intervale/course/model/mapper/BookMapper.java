@@ -1,4 +1,4 @@
-package ru.intervale.course.dao;
+package ru.intervale.course.model.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.intervale.course.model.Book;

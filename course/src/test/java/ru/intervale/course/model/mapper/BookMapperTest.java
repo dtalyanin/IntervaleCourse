@@ -1,14 +1,14 @@
-package ru.intervale.course.dao;
+package ru.intervale.course.model.mapper;
 
 import static org.mockito.Mockito.*;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.mapper.BookMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

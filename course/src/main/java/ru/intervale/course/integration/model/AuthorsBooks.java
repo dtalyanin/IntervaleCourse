@@ -1,8 +1,8 @@
-package ru.intervale.course.model;
+package ru.intervale.course.integration.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import ru.intervale.course.api.AuthorsBooksDeserializer;
+import ru.intervale.course.integration.model.deserializer.AuthorsBooksDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @JsonDeserialize(using = AuthorsBooksDeserializer.class)
 public class AuthorsBooks {
-    List<String> books_olid;
+    private List<String> books_olid;
 
     public AuthorsBooks() {
         books_olid = new ArrayList<>();

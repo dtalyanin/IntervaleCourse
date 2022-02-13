@@ -1,4 +1,4 @@
-package ru.intervale.course.model;
+package ru.intervale.course.integration.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
