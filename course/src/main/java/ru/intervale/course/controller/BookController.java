@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
+import ru.intervale.course.service.BookService;
+
 import javax.validation.constraints.*;
 import java.util.List;
 
@@ -15,67 +16,39 @@ import java.util.List;
 @RestController
 public class BookController {
     @Autowired
-    private BookDao bookDao;
+    private BookService service;
 
     @GetMapping("/books")
-    public ResponseEntity getBooks() {
-        List<Book> books = bookDao.getBooks();
-        ResponseEntity response;
+    public ResponseEntity<Object> getBooks() {
+        List<Book> books = service.getBooks();
+        ResponseEntity<Object> response;
         if (books.size() != 0) {
-            response = new ResponseEntity(books, HttpStatus.OK);
+            response = new ResponseEntity<>(books, HttpStatus.OK);
         }
         else {
-            response = new ResponseEntity("No data found.", HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>("No data found in data base.", HttpStatus.OK);
         }
         return response;
     }
 
     @GetMapping("/book")
-    public ResponseEntity getBookById(@RequestParam(value = "id") @Min(value = 1) int id) {
-        Book book = bookDao.getBookById(id);
-        return new ResponseEntity(book, HttpStatus.OK);
+    public ResponseEntity<Book> getBookById(@RequestParam(value = "id") @Min(value = 1) int id) {
+        return new ResponseEntity(service.getBookById(id), HttpStatus.OK);
 
     }
 
     @PostMapping("/edit")
-    public ResponseEntity editBook(@Validated @RequestBody BookDto book) {
-        int executingResult = bookDao.editBook(book);
-        ResponseEntity response;
-        if (executingResult > 0) {
-            response = new ResponseEntity("Book with ID = " + executingResult + " changed.", HttpStatus.OK);
-        }
-        else if (executingResult == -999) {
-            response = new ResponseEntity("No fields to edit.", HttpStatus.BAD_REQUEST);
-        }
-        else {
-            response = new ResponseEntity("Incorrect ID.", HttpStatus.BAD_REQUEST);
-        }
-        return response;
+    public ResponseEntity<String> editBook(@Validated @RequestBody BookDto book) {
+        return new ResponseEntity<>(service.editBook(book), HttpStatus.OK);
     }
 
     @PutMapping("/add")
-    public ResponseEntity addBook(@Validated @RequestBody Book book) {
-        int addingResult = bookDao.addBook(book);
-        ResponseEntity response;
-        if (addingResult != 0) {
-            response = new ResponseEntity("Book added successfully.", HttpStatus.OK);
-        }
-        else {
-            response = new ResponseEntity("Error in expression.", HttpStatus.SERVICE_UNAVAILABLE);
-        }
-        return response;
+    public ResponseEntity<String> addBook(@Validated @RequestBody Book book) {
+        return new ResponseEntity<>(service.addBook(book), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteBook(@RequestParam(value = "id") @Min(value = 1) int id) {
-        int deletingResult = bookDao.deleteBook(id);
-        ResponseEntity response;
-        if (deletingResult !=0) {
-            response = new ResponseEntity("Book with ID = " + id + " deleted.", HttpStatus.OK);
-        }
-        else {
-            response = new ResponseEntity("Book with ID = " + id + " doesn’t exist.", HttpStatus.BAD_REQUEST);
-        }
-        return response;
+    public ResponseEntity<String> deleteBook(@RequestParam(value = "id") @Min(value = 1) int id) {
+        return new ResponseEntity<>(service.deleteBook(id), HttpStatus.OK);
     }
 }

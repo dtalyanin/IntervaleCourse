@@ -1,4 +1,4 @@
-package ru.intervale.course.integration.controller;
+package ru.intervale.course.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -17,8 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.intervale.course.controller.OpenLibraryController;
 import ru.intervale.course.integration.model.Work;
 import ru.intervale.course.integration.service.OpenLibraryService;
+import ru.intervale.course.service.BookService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,7 @@ public class OpenLibraryControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Mock
-    OpenLibraryService service;
+    BookService service;
     @Mock
     Work work;
     @InjectMocks
@@ -45,7 +47,7 @@ public class OpenLibraryControllerTest {
         List<Work> works = new ArrayList<>();
         works.add(work);
         works.add(work);
-        assertEquals(new ResponseEntity("No books found for author \'aaaa\'.", HttpStatus.BAD_REQUEST), controller.getWorksByAuthor("aaaa"));
+        assertEquals(new ResponseEntity("No books found for author \'aaaa\'.", HttpStatus.OK), controller.getWorksByAuthor("aaaa"));
         assertEquals(new ResponseEntity(works, HttpStatus.OK), controller.getWorksByAuthor("perumov"));
         mockMvc.perform(get("/works:")).andExpect(status().isForbidden()).andExpect(content().
                 string("getWorksByAuthor.author: must not be blank"));
