@@ -13,25 +13,42 @@ import static org.mockito.Mockito.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.intervale.course.dao.impl.BookDaoImpl;
+import ru.intervale.course.integration.model.Work;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
+import ru.intervale.course.model.mapper.BookMapper;
 
 import java.util.Arrays;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class BookDaoTest {
+public class BookDaoImplTest {
     @Mock
     private Book book;
     @Mock
+    private Work work;
+    @Mock
     private JdbcTemplate template;
     @InjectMocks
-    private BookDao bookDao;
+    private BookDaoImpl bookDao;
 
     @Test
     public void testGetBooks() {
         when(template.query(anyString(), any(RowMapper.class))).thenReturn(Arrays.asList(book, book));
         assertEquals(bookDao.getBooks(), Arrays.asList(book, book));
+    }
+
+    @Test
+    public void testGetBooksByAuthor() {
+        when(template.query(anyString(), any(RowMapper.class), any())).thenReturn(Arrays.asList(book, book));
+        assertEquals(bookDao.getBooksByAuthor("perumov"), Arrays.asList(book, book));
+    }
+
+    @Test
+    public void testGetBooksByAuthorAsWork() {
+        when(template.query(anyString(), any(RowMapper.class), any())).thenReturn(Arrays.asList(work, work));
+        assertEquals(bookDao.getBooksByAuthorAsWork("perumov"), Arrays.asList(work, work));
     }
 
     @Test

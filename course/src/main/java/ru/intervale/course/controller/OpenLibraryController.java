@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.intervale.course.integration.model.Work;
-import ru.intervale.course.service.BookService;
+import ru.intervale.course.service.impl.BookServiceImpl;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Map;
 @Validated
 public class OpenLibraryController {
     @Autowired
-    BookService service;
+    BookServiceImpl service;
 
     @GetMapping("/works:{author}")
     public  ResponseEntity<Object> getWorksByAuthor(@PathVariable @NotBlank String author) {

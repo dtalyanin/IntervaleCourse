@@ -17,10 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.intervale.course.controller.OpenLibraryController;
 import ru.intervale.course.integration.model.Work;
-import ru.intervale.course.integration.service.OpenLibraryService;
-import ru.intervale.course.service.BookService;
+import ru.intervale.course.service.impl.BookServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +32,7 @@ public class OpenLibraryControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Mock
-    BookService service;
+    BookServiceImpl service;
     @Mock
     Work work;
     @InjectMocks

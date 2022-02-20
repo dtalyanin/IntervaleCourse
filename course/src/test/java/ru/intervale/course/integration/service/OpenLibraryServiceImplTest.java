@@ -9,11 +9,12 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.dao.BookDao;
+import ru.intervale.course.dao.impl.BookDaoImpl;
 import ru.intervale.course.integration.model.AuthorsBooks;
 import ru.intervale.course.integration.model.AuthorsWorks;
 import ru.intervale.course.integration.model.OpenLibraryBook;
 import ru.intervale.course.integration.model.Work;
+import ru.intervale.course.integration.service.impl.OpenLibraryServiceImpl;
 import ru.intervale.course.model.Book;
 
 import java.util.*;
@@ -23,11 +24,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class OpenLibraryServiceTest {
+public class OpenLibraryServiceImplTest {
     @Mock
     RestTemplate template;
     @Mock
-    BookDao bookDao;
+    BookDaoImpl bookDao;
     @Mock
     OpenLibraryBook openLibraryBook;
     @Mock
@@ -37,7 +38,7 @@ public class OpenLibraryServiceTest {
     @Mock
     AuthorsBooks authorsBooks;
     @InjectMocks
-    OpenLibraryService service;
+    OpenLibraryServiceImpl service;
 
     @Test
     public void testGetWorksByAuthor() {
@@ -49,14 +50,13 @@ public class OpenLibraryServiceTest {
 
     @Test
     public void testGetBooksByAuthor() {
-//        when(template.getForObject(anyString(), eq(AuthorsBooks.class))).thenReturn(authorsBooks);
-//        when(template.getForObject(anyString(), eq(OpenLibraryBook.class))).thenReturn(openLibraryBook);
-//        when(authorsBooks.getBooks_olid()).thenReturn(Arrays.asList(new String[] {"111", "222", "333"}));
-//        when(bookDao.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(new Book[] {book, book}));
-//        Map<String, Object> books = service.getBooksByAuthor("perumov");
-//        Map<String, Object> booksExpected = new HashMap<>();
-//        booksExpected.put("Books from Opel Library", Arrays.asList(new OpenLibraryBook[] {openLibraryBook, openLibraryBook, openLibraryBook}));
-//        booksExpected.put("Books from database", Arrays.asList(new Book[] {book, book}));
-//        assertEquals(booksExpected, books);
+        when(template.getForObject(anyString(), eq(AuthorsBooks.class))).thenReturn(authorsBooks);
+        when(template.getForObject(anyString(), eq(OpenLibraryBook.class))).thenReturn(openLibraryBook);
+        ArrayList<String> olids = new ArrayList<>();
+        olids.add("123456789");
+        olids.add("987654321");
+        when(authorsBooks.getBooks_olid()).thenReturn(olids);
+        when(bookDao.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(new Book[] {book, book}));
+        assertEquals(Arrays.asList(openLibraryBook, openLibraryBook), service.getBooksByAuthorFromOpenLibrary("perumov"));
     }
 }

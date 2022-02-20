@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
-import ru.intervale.course.service.BookService;
+import ru.intervale.course.service.impl.BookServiceImpl;
 
 import java.util.ArrayList;
 
@@ -34,7 +34,7 @@ public class BookControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Mock
-    private BookService service;
+    private BookServiceImpl service;
     @Mock
     private Book book;
     @Mock

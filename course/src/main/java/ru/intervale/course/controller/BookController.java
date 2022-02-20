@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
-import ru.intervale.course.service.BookService;
+import ru.intervale.course.service.impl.BookServiceImpl;
 
 import javax.validation.constraints.*;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class BookController {
     @Autowired
-    private BookService service;
+    private BookServiceImpl service;
 
     @GetMapping("/books")
     public ResponseEntity<Object> getBooks() {
