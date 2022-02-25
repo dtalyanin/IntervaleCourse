@@ -1,7 +1,7 @@
 package ru.intervale.course.service;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,17 +9,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.intervale.course.dao.impl.BookDaoImpl;
-import ru.intervale.course.integration.model.OpenLibraryBook;
-import ru.intervale.course.integration.model.Work;
-import ru.intervale.course.integration.service.impl.OpenLibraryServiceImpl;
+import ru.intervale.course.external.alfa_bank.model.Rate;
+import ru.intervale.course.external.alfa_bank.model.RateListResponse;
+import ru.intervale.course.external.alfa_bank.service.impl.AlfaBankServiceImpl;
+import ru.intervale.course.external.open_library.model.OpenLibraryBook;
+import ru.intervale.course.external.open_library.model.Work;
+import ru.intervale.course.external.open_library.service.impl.OpenLibraryServiceImpl;
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.BookCurrency;
 import ru.intervale.course.model.BookDto;
 import ru.intervale.course.service.impl.BookServiceImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class BookServiceImplTest {
@@ -27,6 +29,8 @@ public class BookServiceImplTest {
     BookDaoImpl bookDao;
     @Mock
     OpenLibraryServiceImpl libraryService;
+    @Mock
+    AlfaBankServiceImpl alfaBankService;
     @Mock
     Book book;
     @Mock
@@ -46,6 +50,9 @@ public class BookServiceImplTest {
     public void testGetBookById() {
         when(bookDao.getBookById(1)).thenReturn(book);
         assertEquals(book, service.getBookById(1));
+        book = null;
+        when(bookDao.getBookById(1)).thenReturn(book);
+        assertEquals(null, service.getBookById(1));
     }
 
     @Test
@@ -118,5 +125,30 @@ public class BookServiceImplTest {
         books.put("Books from Opel Library", expectedOlBooks);
         books.put("Books from database", expectedBooks);
         assertEquals(books, service.getBooksByAuthor("perumov"));
+    }
+
+    @Test
+    public void testGetBooksWithRate() {
+        RateListResponse rateList = mock(RateListResponse.class);
+        Rate rate = mock(Rate.class);
+        List<BookCurrency> bookCurrencyList = new ArrayList<>();
+        List<Rate> rates = new ArrayList<>();
+        Map<String, BigDecimal> prices = new LinkedHashMap<>();
+        prices.put("BYN", new BigDecimal(9).setScale(2));
+        prices.put("RUB", new BigDecimal(3).setScale(2));
+        BookCurrency bookCurrency = new BookCurrency("Harry Potter", prices);
+        when(alfaBankService.getRateList()).thenReturn(rateList);
+        when(rateList.getRates()).thenReturn(rates);
+        when(bookDao.getBooksByName("Eragon")).thenReturn(new ArrayList<>());
+        when(bookDao.getBooksByName("Harry Potter")).thenReturn(Arrays.asList(book));
+        when(book.getName()).thenReturn("Harry Potter");
+        when(book.getPrice()).thenReturn(900);
+        when(rate.getBuyIso()).thenReturn("BYN");
+        when(rate.getBuyRate()).thenReturn(new BigDecimal(3));
+        when(rate.getSellIso()).thenReturn("RUB");
+        assertEquals(bookCurrencyList, service.getBooksWithRate("Eragon"));
+        bookCurrencyList.add(bookCurrency);
+        rates.add(rate);
+        assertEquals(bookCurrencyList, service.getBooksWithRate("Harry Potter"));
     }
 }

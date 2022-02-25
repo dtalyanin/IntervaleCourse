@@ -8,8 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.mapper.BookMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

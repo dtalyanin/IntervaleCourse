@@ -1,7 +1,6 @@
 package ru.intervale.course.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,11 +57,12 @@ public class BookControllerTest {
     @Test
     public void testGetBookById() throws Exception {
         when(service.getBookById(1)).thenReturn(book);
-        when(service.getBookById(8)).thenThrow(EmptyResultDataAccessException.class);
         //when book with ID is found in DB
         assertEquals(new ResponseEntity(book, HttpStatus.OK), bookController.getBookById(1));
         //when book with ID isn't found in DB
-        assertThrows(EmptyResultDataAccessException.class, () -> bookController.getBookById(8));
+        Book noBook = null;
+        when(service.getBookById(2)).thenReturn(noBook);
+        assertEquals(new ResponseEntity("No book found for ID = 2", HttpStatus.OK), bookController.getBookById(2));
         //request with invalid argument
         mockMvc.perform(get("/book?id=-100")).andExpect(status().isForbidden()).andExpect(content().
                 string("getBookById.id: must be greater than or equal to 1"));

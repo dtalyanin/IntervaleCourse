@@ -1,24 +1,20 @@
 package ru.intervale.course.dao;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.intervale.course.dao.impl.BookDaoImpl;
-import ru.intervale.course.integration.model.Work;
+import ru.intervale.course.external.open_library.model.Work;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDto;
-import ru.intervale.course.model.mapper.BookMapper;
-
 import java.util.Arrays;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,6 +51,12 @@ public class BookDaoImplTest {
     public void testGetBookById() {
         when(template.queryForObject(anyString(), any(RowMapper.class), anyInt())).thenReturn(book);
         assertEquals(bookDao.getBookById(10), book);
+    }
+
+    @Test
+    public void testGetBooksByName() {
+        when(template.query(anyString(), any(RowMapper.class), any())).thenReturn(Arrays.asList(work, work));
+        assertEquals(bookDao.getBooksByName("Harry Potter"), Arrays.asList(work, work));
     }
 
     @Test

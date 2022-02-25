@@ -1,11 +1,16 @@
 package ru.intervale.course.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
+/**
+ * Класс книги для передачи в БД
+ */
 @Builder
 @Getter
+@Schema(description = "Книга для передачи в БД")
 public class BookDto {
     @NonNull
     @Min(1)

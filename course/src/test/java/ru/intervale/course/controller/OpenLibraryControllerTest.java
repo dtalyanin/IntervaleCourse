@@ -1,6 +1,6 @@
 package ru.intervale.course.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.intervale.course.integration.model.Work;
+import ru.intervale.course.external.open_library.model.Work;
 import ru.intervale.course.service.impl.BookServiceImpl;
 
 import java.util.ArrayList;

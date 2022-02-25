@@ -1,6 +1,7 @@
 package ru.intervale.course.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
@@ -10,11 +11,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-
+/**
+ * Класс представления книги из БД
+ */
 @Data
 @AllArgsConstructor
 @JsonDeserialize(using = BookDeserializer.class)
 @Validated
+@Schema(description = "Книга из БД")
 public class Book {
     @Min(0)
     private final int ID;

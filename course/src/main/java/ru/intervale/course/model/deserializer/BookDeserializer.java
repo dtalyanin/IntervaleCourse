@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ru.intervale.course.model.Book;
 import java.io.IOException;
 
+/**
+ * Конвертация JSON к классу книги
+ */
 public class BookDeserializer extends StdDeserializer<Book> {
 
     public BookDeserializer() {
@@ -18,6 +21,10 @@ public class BookDeserializer extends StdDeserializer<Book> {
         super(vc);
     }
 
+    /**
+     * Метод по конвертации JSON в класс книги
+     * @return книга, сконвертированная из JSON
+     */
     @Override
     public Book deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         JsonNode node = p.getCodec().readTree(p);
