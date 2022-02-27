@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
-import ru.intervale.course.api.BookDeserializer;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -12,9 +12,9 @@ import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
-@JsonDeserialize(using = BookDeserializer.class)
 @Validated
 public class Book {
+    @Min(1)
     private final int ID;
     @Pattern(regexp = "\\d{3}-\\d-\\d{3}-\\d{5}-\\d", message = "Incorrect ISBN type XXX-X-XXX-XXXXX-X")
     private String isbn;
