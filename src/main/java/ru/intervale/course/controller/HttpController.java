@@ -1,6 +1,7 @@
 package ru.intervale.course.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,12 @@ public class HttpController {
         return new ResponseEntity<>("201 for " + id, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/echo", consumes = "application/json")
+    @PostMapping(value = "/echo", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> postJson() {
         return new ResponseEntity<>("200 json", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/echo", consumes = "application/xml")
+    @PostMapping(value = "/echo", consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> postXml() {
         return new ResponseEntity<>("200 xml", HttpStatus.OK);
     }
@@ -54,11 +55,4 @@ public class HttpController {
         response.addCookie(cookie);
         return responseWithCookie;
     }
-    /*
-
-
-
-GET /cookie при первом обращении к серверу - 200 OK и установить cookie с датой запроса
-GET /cookie при повторном обращении к серверу - 200 вывести дату предыдущего обращения и обновить cookie с датой запроса
-     */
 }
