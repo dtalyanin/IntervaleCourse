@@ -16,6 +16,7 @@ import java.util.List;
 public class BookController {
     @Autowired
     BookService bookService;
+    private static  final String ID_MESSAGE = "ID cannot be less than 1";
 
     @GetMapping("/books")
     public List<Book> getBooks() {
@@ -23,12 +24,13 @@ public class BookController {
     }
 
     @GetMapping("/book/{id}")
-    public Book getBookById(@PathVariable(value = "id") @Min(value = 1) int id) {
+    public Book getBookById(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id) {
         return bookService.getBookById(id);
     }
 
     @PostMapping("/edit/{id}")
-    public BookLibraryResult editBook(@PathVariable(value = "id") @Min(value = 1) int id, @Valid @RequestBody Book book) {
+    public BookLibraryResult editBook(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id,
+                                      @Valid @RequestBody Book book) {
         return bookService.editBook(id, book);
     }
 
@@ -38,7 +40,7 @@ public class BookController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public BookLibraryResult deleteBook(@PathVariable(value = "id") @Min(value = 1) int id) {
+    public BookLibraryResult deleteBook(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id) {
         return bookService.deleteBookById(id);
     }
 }
