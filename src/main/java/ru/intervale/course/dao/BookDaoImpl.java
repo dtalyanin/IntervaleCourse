@@ -37,22 +37,19 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public boolean addBook(Book book) {
-        boolean addingResult = false;
-        if (!books.containsKey(book.getId())) {
-            books.put(book.getId(), book);
-            addingResult = true;
-        }
-        return addingResult;
+    public int addBook(Book book) {
+        book.setId(books.size() + 1);
+        books.put(book.getId(), book);
+        return book.getId();
     }
 
     @Override
     public boolean editBook(Book book) {
-        return books.replace(book.getId(), book) != null;
+        return books.replace(book.getId(), book) == null;
     }
 
     @Override
     public boolean deleteBookById(int id) {
-        return books.remove(id) != null;
+        return books.remove(id) == null;
     }
 }

@@ -9,9 +9,9 @@ public interface BookService {
 
     Book getBookById(int id);
 
-    boolean addBook(Book book);
+    String addBook(Book book);
 
-    boolean editBook(Book book);
+    String editBook(int id, Book book);
 
-    boolean deleteBookById(int id);
+    String deleteBookById(int id);
 }
