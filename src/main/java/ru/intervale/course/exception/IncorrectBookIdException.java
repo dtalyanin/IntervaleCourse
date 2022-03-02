@@ -4,10 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class IncorrectBookIdException extends IllegalArgumentException {
-    private int id;
-
-    public IncorrectBookIdException(String s, int id) {
+    public IncorrectBookIdException(String s) {
         super(s);
-        this.id = id;
     }
 }

@@ -10,14 +10,15 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.intervale.course.exception.IncorrectBookIdException;
-import ru.intervale.course.model.pesponses.ExceptionResponse;
+import ru.intervale.course.model.enums.ErrorCode;
+import ru.intervale.course.model.responses.ErrorResponse;
 
 @ControllerAdvice
 public class BookExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponse> findValidationExceptionInParameters(ConstraintViolationException e) {
+    public ResponseEntity<ErrorResponse> findValidationExceptionInParameters(ConstraintViolationException e) {
         ConstraintViolation<?> constraintViolation = e.getConstraintViolations().iterator().next();
-        ExceptionResponse errorResponse = new ExceptionResponse("Incorrect request parameter",
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR,
                 constraintViolation.getPropertyPath().toString(),
                 constraintViolation.getInvalidValue(),
                 constraintViolation.getMessage());
@@ -25,9 +26,9 @@ public class BookExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> findBookException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> findBookException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getFieldErrors().get(0);
-        ExceptionResponse errorResponse = new ExceptionResponse("Validation exception for class field",
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR,
                 fieldError.getField(),
                 fieldError.getRejectedValue(),
                 fieldError.getDefaultMessage());
@@ -35,8 +36,8 @@ public class BookExceptionHandler {
     }
 
     @ExceptionHandler(IncorrectBookIdException.class)
-    public ResponseEntity<ExceptionResponse> notFoundBookWithId(IncorrectBookIdException e) {
-        ExceptionResponse errorResponse = new ExceptionResponse("Book not found", "id", e.getId(), e.getMessage());
+    public ResponseEntity<ErrorResponse> notFoundBookWithId(IncorrectBookIdException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.BOOK_NOT_FOUND, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

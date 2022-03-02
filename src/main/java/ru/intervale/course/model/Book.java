@@ -10,20 +10,20 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Validated
 public class Book {
-    @Min(0)
+    @Min(value = 0, message = "ID cannot be less than 0")
     private int id;
     @NotEmpty(message = "ISBN cannot be empty")
-    @Pattern(regexp = "\\d{3}-\\d-\\d{3}-\\d{5}-\\d", message = "Incorrect ISBN format XXX-X-XXX-XXXXX-X")
+    @Pattern(regexp = "\\d{3}-\\d-\\d{3}-\\d{5}-\\d", message = "Incorrect format. Use XXX-X-XXX-XXXXX-X")
     private String isbn;
-    @NotBlank
+    @NotBlank(message = "Book name cannot be empty")
     private String name;
     @NotEmpty(message = "Author name cannot be empty")
-    @Pattern(regexp = "\\p{IsAlphabetic}+\\.(\\p{IsAlphabetic}+\\.)? \\p{IsAlphabetic}+", message = "Incorrect author format X.X. XXXX")
+    @Pattern(regexp = "\\p{IsAlphabetic}+\\.(\\p{IsAlphabetic}+\\.)? \\p{IsAlphabetic}+", message = "Incorrect format. Use X.X. XXXX")
     private String author;
-    @Min(1)
+    @Min(value = 1, message = "Page cannot be less than 1")
     private int pageCount;
-    @Min(1)
+    @Min(value = 1, message = "Weight cannot be less than 1")
     private int weight;
-    @Min(1)
+    @Min(value = 1, message = "Price cannot be less than 1")
     private int price;
 }

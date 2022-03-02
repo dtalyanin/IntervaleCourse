@@ -1,6 +1,7 @@
 package ru.intervale.course.service;
 
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.responses.BookLibraryResult;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface BookService {
 
     Book getBookById(int id);
 
-    String addBook(Book book);
+    BookLibraryResult addBook(Book book);
 
-    String editBook(int id, Book book);
+    BookLibraryResult editBook(int id, Book book);
 
-    String deleteBookById(int id);
+    BookLibraryResult deleteBookById(int id);
 }

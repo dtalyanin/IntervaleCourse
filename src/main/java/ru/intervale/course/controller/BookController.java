@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.pesponses.BookLibraryResult;
+import ru.intervale.course.model.responses.BookLibraryResult;
 import ru.intervale.course.service.BookService;
 
 import javax.validation.Valid;
@@ -29,16 +29,16 @@ public class BookController {
 
     @PostMapping("/edit/{id}")
     public BookLibraryResult editBook(@PathVariable(value = "id") @Min(value = 1) int id, @Valid @RequestBody Book book) {
-        return new BookLibraryResult("edit", bookService.editBook(id, book));
+        return bookService.editBook(id, book);
     }
 
     @PutMapping("/add")
     public BookLibraryResult addBook(@Valid @RequestBody Book book) {
-        return new BookLibraryResult("add", bookService.addBook(book));
+        return bookService.addBook(book);
     }
 
     @DeleteMapping("/delete/{id}")
     public BookLibraryResult deleteBook(@PathVariable(value = "id") @Min(value = 1) int id) {
-        return new BookLibraryResult("delete", bookService.deleteBookById(id));
+        return bookService.deleteBookById(id);
     }
 }

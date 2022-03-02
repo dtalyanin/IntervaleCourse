@@ -45,11 +45,11 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public boolean editBook(Book book) {
-        return books.replace(book.getId(), book) == null;
+        return books.replace(book.getId(), book) != null;
     }
 
     @Override
     public boolean deleteBookById(int id) {
-        return books.remove(id) == null;
+        return books.remove(id) != null;
     }
 }
