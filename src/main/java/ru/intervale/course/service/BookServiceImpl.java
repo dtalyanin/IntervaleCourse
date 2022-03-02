@@ -11,7 +11,7 @@ import ru.intervale.course.model.responses.BookLibraryResult;
 import java.util.List;
 
 @Service
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl implements BookService {
     @Autowired
     private BookDao bookDao;
     private static final String NO_BOOK_WITH_ID = "No book with ID presents in library";
