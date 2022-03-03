@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.model.BookCurrency;
+import ru.intervale.course.model.BookRangeCurrency;
 import ru.intervale.course.service.impl.BookServiceImpl;
 
 import javax.validation.constraints.NotBlank;
@@ -47,5 +48,10 @@ public class AlfaBankController {
             response = new ResponseEntity("No books with title '" + title + "' found.", HttpStatus.OK);
         }
         return response;
+    }
+
+    @GetMapping("/price/{title}/{currency}")
+    public List<BookRangeCurrency> getPriceByTitleInDynamics(@PathVariable String title, @PathVariable String currency) {
+        return service.getBooksWithRateInDynamic(title, currency);
     }
 }

@@ -12,9 +12,11 @@ import ru.intervale.course.external.open_library.service.impl.OpenLibraryService
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookCurrency;
 import ru.intervale.course.model.BookDto;
+import ru.intervale.course.model.BookRangeCurrency;
 import ru.intervale.course.service.BookService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -167,6 +169,22 @@ public class BookServiceImpl implements BookService {
         return convertBookToBookCurrency(books, rates.getRates());
     }
 
+    public List<BookRangeCurrency> getBooksWithRateInDynamic(String title, String currency) {
+        List<Book> books = bookDao.getBooksByName(title);
+        List<BookRangeCurrency> bookRangeCurrencies = new ArrayList<>();
+        if (books.size() != 0) {
+            Map<LocalDate, BigDecimal> rates = alfaBankService.getRatesInRange(currency);
+            for (LocalDate key:
+                    rates.keySet()) {
+                System.out.println(key + " " + rates.get(key));
+            }
+            for (Book book: books) {
+                bookRangeCurrencies.add(convertBookToRangeCurrency(book, rates));
+            }
+        }
+        return bookRangeCurrencies;
+    }
+
     /**
      *
      * @param books список книг
@@ -191,5 +209,15 @@ public class BookServiceImpl implements BookService {
             bookCurrencies.add(bookCurrency);
         }
         return bookCurrencies;
+    }
+
+    private BookRangeCurrency convertBookToRangeCurrency(Book book, Map<LocalDate, BigDecimal> rates) {
+        BigDecimal bookPriceInByn = new BigDecimal(book.getPrice()/100.0).setScale(2, BigDecimal.ROUND_HALF_UP);
+        Map<LocalDate, BigDecimal> prices = new LinkedHashMap<>();
+        for (LocalDate date: rates.keySet()) {
+            prices.put(date, bookPriceInByn.divide(rates.get(date)));
+        }
+        BookRangeCurrency bookRangeCurrency = new BookRangeCurrency(book.getName(), prices);
+        return bookRangeCurrency;
     }
 }
