@@ -16,7 +16,7 @@ import ru.intervale.course.external.open_library.model.OpenLibraryBook;
 import ru.intervale.course.external.open_library.model.Work;
 import ru.intervale.course.external.open_library.service.impl.OpenLibraryServiceImpl;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.BookCurrency;
+import ru.intervale.course.model.BookWithCurrencies;
 import ru.intervale.course.model.BookDto;
 import ru.intervale.course.service.impl.BookServiceImpl;
 
@@ -131,12 +131,12 @@ public class BookServiceImplTest {
     public void testGetBooksWithRate() {
         RateListResponse rateList = mock(RateListResponse.class);
         Rate rate = mock(Rate.class);
-        List<BookCurrency> bookCurrencyList = new ArrayList<>();
+        List<BookWithCurrencies> bookWithCurrenciesList = new ArrayList<>();
         List<Rate> rates = new ArrayList<>();
         Map<String, BigDecimal> prices = new LinkedHashMap<>();
         prices.put("BYN", new BigDecimal(9).setScale(2));
         prices.put("RUB", new BigDecimal(3).setScale(2));
-        BookCurrency bookCurrency = new BookCurrency("Harry Potter", prices);
+        BookWithCurrencies bookWithCurrencies = new BookWithCurrencies("Harry Potter", prices);
         when(alfaBankService.getRateList()).thenReturn(rateList);
         when(rateList.getRates()).thenReturn(rates);
         when(bookDao.getBooksByName("Eragon")).thenReturn(new ArrayList<>());
@@ -146,9 +146,9 @@ public class BookServiceImplTest {
         when(rate.getBuyIso()).thenReturn("BYN");
         when(rate.getBuyRate()).thenReturn(new BigDecimal(3));
         when(rate.getSellIso()).thenReturn("RUB");
-        assertEquals(bookCurrencyList, service.getBooksWithRate("Eragon"));
-        bookCurrencyList.add(bookCurrency);
+        assertEquals(bookWithCurrenciesList, service.getBooksWithCurrencies("Eragon"));
+        bookWithCurrenciesList.add(bookWithCurrencies);
         rates.add(rate);
-        assertEquals(bookCurrencyList, service.getBooksWithRate("Harry Potter"));
+        assertEquals(bookWithCurrenciesList, service.getBooksWithCurrencies("Harry Potter"));
     }
 }

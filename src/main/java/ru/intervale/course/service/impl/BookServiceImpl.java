@@ -10,13 +10,12 @@ import ru.intervale.course.external.open_library.model.OpenLibraryBook;
 import ru.intervale.course.external.open_library.model.Work;
 import ru.intervale.course.external.open_library.service.impl.OpenLibraryServiceImpl;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.BookCurrency;
+import ru.intervale.course.model.BookWithCurrencies;
 import ru.intervale.course.model.BookDto;
-import ru.intervale.course.model.BookRangeCurrency;
+import ru.intervale.course.model.BookWithCurrencyRange;
 import ru.intervale.course.service.BookService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -154,70 +153,84 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Возвращает список из книги с заданным названием и стоимостью в различных валютах согласно курсам, получаемым
-     * из API Альфа-банка
+     * Возвращает список книг с заданным названием и их стоимостью в различных валютах
      * @param title название книги для поиска
-     * @return список из названия книги и её стоиомсти в различных валютах
+     * @return список книг с заданным названием и их стоимостью в различных валютах
      */
     @Override
-    public List<BookCurrency> getBooksWithRate(String title) {
+    public List<BookWithCurrencies> getBooksWithCurrencies(String title) {
         //Метод получает из сервиса список курсов валют из API Альфа-банка
         RateListResponse rates = alfaBankService.getRateList();
+        System.out.println(rates.getRates());
         //BookDao возвращает список книг с указанным названием
         List<Book> books = bookDao.getBooksByName(title);
+        System.out.println(books);
+        List<BookWithCurrencies> booksWithCurrencies = new ArrayList<>();
         //Объединяет данные по книге и её стоимости
-        return convertBookToBookCurrency(books, rates.getRates());
+        for (Book book: books) {
+            booksWithCurrencies.add(convertBookToBookWithCurrency(book, rates.getRates()));
+        }
+        return booksWithCurrencies;
     }
 
-    public List<BookRangeCurrency> getBooksWithRateInDynamic(String title, String currency) {
+    /**
+     * Возвращает список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     * @param title название книги для поиска
+     * @param currency код валюты согласно ISO
+     * @param period диапазон, в котором выполнить поиск курсов валют
+     * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     */
+    @Override
+    public List<BookWithCurrencyRange> getBookWithCurrencyRange(String title, String currency, int period) {
+        //BookDao возвращает список книг с указанным названием
         List<Book> books = bookDao.getBooksByName(title);
-        List<BookRangeCurrency> bookRangeCurrencies = new ArrayList<>();
+        List<BookWithCurrencyRange> bookRangeCurrencies = new ArrayList<>();
         if (books.size() != 0) {
-            Map<LocalDate, BigDecimal> rates = alfaBankService.getRatesInRange(currency);
-            for (LocalDate key:
-                    rates.keySet()) {
-                System.out.println(key + " " + rates.get(key));
-            }
+            //Метод получает из сервиса список диапазонов курсов валют из API Альфа-банка
+            Map<String, BigDecimal> rates = alfaBankService.getRatesInRange(currency, period);
+            //Конвертация в представление книги по её названию с диапазоном курсов валют
             for (Book book: books) {
-                bookRangeCurrencies.add(convertBookToRangeCurrency(book, rates));
+                bookRangeCurrencies.add(convertBookToBookWithCurrencyRange(book, rates));
             }
         }
         return bookRangeCurrencies;
     }
 
     /**
-     *
-     * @param books список книг
+     * Конвертирует книгу из БД в
+     * @param book книга для конвертации
      * @param rates список валют с указанием курса конвертации
-     * @return список книг по их названию и списку стоимости в различных валютах
+     * @return книга c заданным названием и стоимость в различных валютах
      */
-    private List<BookCurrency> convertBookToBookCurrency(List<Book> books, List<Rate> rates) {
-        List<BookCurrency> bookCurrencies = new ArrayList<>();
+    private BookWithCurrencies convertBookToBookWithCurrency(Book book, List<Rate> rates) {
         String byn = "BYN";
-        for (Book book: books) {
-            Map<String, BigDecimal> currencies = new LinkedHashMap<>();
-            //Определяет стоимость книги в BYN
-            BigDecimal bookPriceInByn = new BigDecimal(book.getPrice()/100.0).setScale(2, BigDecimal.ROUND_HALF_UP);
-            currencies.put(byn, bookPriceInByn);
-            //Цикл для добавления к списку пересчета стомости в указанной валюте
-            for (Rate rate: rates) {
-                if (rate.getBuyIso().equals(byn)) {
-                    currencies.put(rate.getSellIso(), bookPriceInByn.divide(rate.getBuyRate(), BigDecimal.ROUND_HALF_UP));
-                }
+        Map<String, BigDecimal> currencies = new LinkedHashMap<>();
+        //Определяет стоимость книги в BYN
+        BigDecimal bookPriceInByn = new BigDecimal(book.getPrice()/100.0).setScale(2, BigDecimal.ROUND_HALF_UP);
+        currencies.put(byn, bookPriceInByn);
+        //Цикл для добавления к списку пересчета стомости в указанной валюте
+        for (Rate rate: rates) {
+            if (rate.getBuyIso().equals(byn)) {
+                currencies.put(rate.getSellIso(), bookPriceInByn.divide(rate.getBuyRate(), BigDecimal.ROUND_HALF_UP));
             }
-            BookCurrency bookCurrency = new BookCurrency(book.getName(), currencies);
-            bookCurrencies.add(bookCurrency);
         }
-        return bookCurrencies;
+        BookWithCurrencies bookWithCurrencies = new BookWithCurrencies(book.getName(), currencies);
+        return bookWithCurrencies;
     }
 
-    private BookRangeCurrency convertBookToRangeCurrency(Book book, Map<LocalDate, BigDecimal> rates) {
+    /**
+     * Конвертирует книгу из БД в книгу c диапазоном стоимости в выбранной валюте по дням, используя список курсов валюты по датам
+     * @param book книга из БД
+     * @param rates список курсов валюты по датам
+     * @return книга c заданным названием и диапазоном стоимости в выбранной валюте по дням
+     */
+    private BookWithCurrencyRange convertBookToBookWithCurrencyRange(Book book, Map<String, BigDecimal> rates) {
         BigDecimal bookPriceInByn = new BigDecimal(book.getPrice()/100.0).setScale(2, BigDecimal.ROUND_HALF_UP);
-        Map<LocalDate, BigDecimal> prices = new LinkedHashMap<>();
-        for (LocalDate date: rates.keySet()) {
-            prices.put(date, bookPriceInByn.divide(rates.get(date)));
+        Map<String, BigDecimal> prices = new LinkedHashMap<>();
+        for (String date: rates.keySet()) {
+            prices.put(date, bookPriceInByn.divide(rates.get(date), BigDecimal.ROUND_HALF_UP));
         }
-        BookRangeCurrency bookRangeCurrency = new BookRangeCurrency(book.getName(), prices);
-        return bookRangeCurrency;
+        BookWithCurrencyRange bookWithCurrencyRange = new BookWithCurrencyRange(book.getName(), prices);
+        return bookWithCurrencyRange;
     }
 }

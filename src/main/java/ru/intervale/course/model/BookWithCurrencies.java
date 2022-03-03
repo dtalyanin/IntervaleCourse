@@ -16,7 +16,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Validated
 @Schema(description = "Стоимость в различных валютах для книги с указанным названием.")
-public class BookCurrency {
+public class BookWithCurrencies {
     @NotBlank
     private String name;
     @NonNull

@@ -49,11 +49,11 @@ public class ControllerInterceptor implements HandlerInterceptor {
      * @param handler обработчик для проверки типа и/или экземпляра
      * @param ex любое исключение, возникающее при выполнении обработчика
      */
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if (response.getStatus() >= 400) {
-            logger.debug("RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
-        }
-    }
+//    @Override
+//    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+//        if (response.getStatus() >= 400) {
+//            logger.info("RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
+//        }
+//    }
 
 }

@@ -35,10 +35,10 @@ public class BookExceptionHandler {
     }
 
 
-    @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
-        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(JsonProcessingException.class)
+//    public ResponseEntity cameIncorrectJson(JsonProcessingException e) {
+//        return new ResponseEntity("Invalid json.", HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(OpenLibraryException.class)
     public ResponseEntity getBadResponseFromOpenLibrary(OpenLibraryException e) {

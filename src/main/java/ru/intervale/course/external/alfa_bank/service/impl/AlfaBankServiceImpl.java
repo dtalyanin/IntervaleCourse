@@ -37,25 +37,33 @@ public class AlfaBankServiceImpl implements AlfaBankService {
         return template.getForObject("/rates", RateListResponse.class);
     }
 
-    public Map<LocalDate, BigDecimal> getRatesInRange(String currency) {
-        LocalDate date = LocalDate.now().minusDays(14);
+    /**
+     * Возвращает список в виде Map (ключ - дата установления курса, значение - действующий курс НБ РБ)
+     * @param currency код валюты согласно ISO
+     * @param period диапазон, в котором выполнить поиск курсов валют
+     * @return диапазон курсов валют по дням (для выходных дней значения могут отсутствовать)
+     */
+    @Override
+    public Map<String, BigDecimal> getRatesInRange(String currency, int period) {
+        LocalDate dateStart = LocalDate.now().minusDays(period);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        Map<LocalDate, BigDecimal> rates = new LinkedHashMap<>();
-        NationalRateListResponse rateListResponse = template.getForObject("/nationalRates?date=" + formatter.format(date), NationalRateListResponse.class);
+        Map<String, BigDecimal> rates = new LinkedHashMap<>();
+        NationalRateListResponse rateListResponse = template.getForObject("/nationalRates?date=" + formatter.format(dateStart), NationalRateListResponse.class);
         int currencyCode = 0;
         for (NationalRate rate: rateListResponse.getRates()) {
-            if (rate.getIso().equals(currency)) {
+            if (rate.getIso().equalsIgnoreCase(currency)) {
                 currencyCode = rate.getCode();
-                rates.put(rate.getDate(), rate.getRate());
+                rates.put(rate.getDate().format(formatter), rate.getRate());
                 break;
             }
         }
         if (currencyCode != 0) {
-            while (date.isAfter(LocalDate.now())) {
-                date = date.plusDays(1);
-                rateListResponse = template.getForObject("/nationalRates?date=" + formatter.format(date) + "&currencyCode=" + currencyCode, NationalRateListResponse.class);
+            LocalDate dateNow = LocalDate.now();
+            while (dateStart.isBefore(dateNow)) {
+                dateStart = dateStart.plusDays(1);
+                rateListResponse = template.getForObject("/nationalRates?date=" + formatter.format(dateStart) + "&currencyCode=" + currencyCode, NationalRateListResponse.class);
                 NationalRate nationalRate = rateListResponse.getRates().get(0);
-                rates.put(nationalRate.getDate(), nationalRate.getRate());
+                rates.put(nationalRate.getDate().format(formatter), nationalRate.getRate());
             }
         }
         return rates;

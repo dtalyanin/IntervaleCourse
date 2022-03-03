@@ -1,14 +1,14 @@
 package ru.intervale.course.external.alfa_bank.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.math.BigDecimal;
 
-
 /**
  * Курс валюты Национального банка Республики Беларусь
  */
-
 public class NationalRate {
 
   private BigDecimal rate = null;
@@ -19,6 +19,7 @@ public class NationalRate {
 
   private Integer quantity = null;
 
+  @JsonFormat(pattern = "dd.MM.yyyy")
   private LocalDate date = null;
 
   private String name = null;
@@ -27,11 +28,6 @@ public class NationalRate {
     this.rate = rate;
     return this;
   }
-
-   /**
-   * Курс Национального банка Республики Беларусь
-   * @return rate
-  **/
 
   public BigDecimal getRate() {
     return rate;
@@ -46,10 +42,6 @@ public class NationalRate {
     return this;
   }
 
-   /**
-   * Мнемоника валюты
-   * @return iso
-  **/
   public String getIso() {
     return iso;
   }
@@ -62,11 +54,6 @@ public class NationalRate {
     this.code = code;
     return this;
   }
-
-   /**
-   * Код валюты
-   * @return code
-  **/
 
   public Integer getCode() {
     return code;
@@ -81,11 +68,6 @@ public class NationalRate {
     return this;
   }
 
-   /**
-   * Количество валюты
-   * @return quantity
-  **/
-
   public Integer getQuantity() {
     return quantity;
   }
@@ -99,10 +81,6 @@ public class NationalRate {
     return this;
   }
 
-   /**
-   * Дата начала действия курса
-   * @return date
-  **/
   public LocalDate getDate() {
     return date;
   }
@@ -116,10 +94,6 @@ public class NationalRate {
     return this;
   }
 
-   /**
-   * Наименование валюты
-   * @return name
-  **/
   public String getName() {
     return name;
   }
@@ -167,10 +141,6 @@ public class NationalRate {
     return sb.toString();
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
   private String toIndentedString(Object o) {
     if (o == null) {
       return "null";

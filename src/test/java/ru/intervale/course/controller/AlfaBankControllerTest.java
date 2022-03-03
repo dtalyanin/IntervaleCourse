@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.intervale.course.model.BookCurrency;
+import ru.intervale.course.model.BookWithCurrencies;
 import ru.intervale.course.service.impl.BookServiceImpl;
 
 import java.util.ArrayList;
@@ -29,15 +29,15 @@ public class AlfaBankControllerTest {
     @Mock
     BookServiceImpl service;
     @Mock
-    BookCurrency bookCurrency;
+    BookWithCurrencies bookWithCurrencies;
     @InjectMocks
     AlfaBankController alfaBankController;
 
     @Test
     public void testGetPriceByTitle() {
-        when(service.getBooksWithRate("no title")).thenReturn(new ArrayList<>());
-        when(service.getBooksWithRate("Eragon")).thenReturn(Arrays.asList(bookCurrency, bookCurrency));
+        when(service.getBooksWithCurrencies("no title")).thenReturn(new ArrayList<>());
+        when(service.getBooksWithCurrencies("Eragon")).thenReturn(Arrays.asList(bookWithCurrencies, bookWithCurrencies));
         assertEquals(new ResponseEntity("No books with title 'no title' found.", HttpStatus.OK), alfaBankController.getPriceByTitle("no title"));
-        assertEquals(new ResponseEntity(Arrays.asList(bookCurrency, bookCurrency), HttpStatus.OK), alfaBankController.getPriceByTitle("Eragon"));
+        assertEquals(new ResponseEntity(Arrays.asList(bookWithCurrencies, bookWithCurrencies), HttpStatus.OK), alfaBankController.getPriceByTitle("Eragon"));
     }
 }
