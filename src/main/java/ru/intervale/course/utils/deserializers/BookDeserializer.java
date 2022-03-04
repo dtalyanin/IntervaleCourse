@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import ru.intervale.course.model.Book;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class BookDeserializer extends StdDeserializer<Book> {
 
@@ -26,7 +27,7 @@ public class BookDeserializer extends StdDeserializer<Book> {
         String author = getStringFromField(node, "author");
         int pageCount = getIntFromField(node, "pageCount");
         int weight = getIntFromField(node, "weight");
-        int price = getIntFromField(node, "price");
+        BigDecimal price = getBigDecimalFromField(node, "price");
         return new Book(0, isbn, name, author, pageCount, weight, price);
     }
 
@@ -38,5 +39,10 @@ public class BookDeserializer extends StdDeserializer<Book> {
     private int getIntFromField(JsonNode node, String field) {
         JsonNode childNode = node.get(field);
         return childNode == null || childNode.isNull() ? 0 : childNode.asInt();
+    }
+
+    private BigDecimal getBigDecimalFromField(JsonNode node, String field) {
+        JsonNode childNode = node.get(field);
+        return childNode == null || childNode.isNull() ? null : childNode.decimalValue();
     }
 }

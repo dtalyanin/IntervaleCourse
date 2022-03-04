@@ -15,8 +15,8 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookDao bookDao;
     private static final String NO_BOOK_WITH_ID = "No book with ID presents in library";
-    private static final String OPERATION_SUCCESSFUL = "Operation completed successfully with book ID = ";
-    
+    private static final String OPERATION_SUCCESSFUL = "Operation completed successfully";
+
     @Override
     public List<Book> getBooks() {
         return bookDao.getBooks();
@@ -33,7 +33,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookLibraryResult addBook(Book book) {
-        return new BookLibraryResult(OperationType.ADD, OPERATION_SUCCESSFUL + bookDao.addBook(book));
+        bookDao.addBook(book);
+        return new BookLibraryResult(OperationType.ADD, OPERATION_SUCCESSFUL);
     }
 
     @Override
