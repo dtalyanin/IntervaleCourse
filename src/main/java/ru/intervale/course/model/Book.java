@@ -1,14 +1,17 @@
 package ru.intervale.course.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
+import ru.intervale.course.utils.deserializers.BookDeserializer;
 
 import javax.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
 @Validated
+@JsonDeserialize(using = BookDeserializer.class)
 public class Book {
     @Min(value = 0, message = "ID cannot be less than 0")
     private int id;
@@ -17,7 +20,7 @@ public class Book {
     private String isbn;
     @NotBlank(message = "Book name cannot be empty")
     private String name;
-    @NotEmpty(message = "Author name cannot be empty")
+    @NotBlank(message = "Author name cannot be empty")
     @Pattern(regexp = "\\p{IsAlphabetic}+\\.(\\p{IsAlphabetic}+\\.)? \\p{IsAlphabetic}+", message = "Incorrect format. Use X.X. XXXX")
     private String author;
     @Min(value = 1, message = "Page cannot be less than 1")
