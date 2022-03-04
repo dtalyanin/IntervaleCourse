@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-books
+      author: Dmitry Talianin
+      changes:
+        - createTable:
+            tableName: Books
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pages
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: weight
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: decimal
+                  constraints:
+                    nullable: false
