@@ -10,9 +10,13 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.intervale.course.exception.IncorrectBookIdException;
+import ru.intervale.course.external.open_library.exception.OpenLibraryException;
 import ru.intervale.course.model.enums.ErrorCode;
 import ru.intervale.course.model.responses.ErrorResponse;
 
+/**
+ * Обработчик исключений
+ */
 @ControllerAdvice
 public class BookExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
@@ -39,5 +43,11 @@ public class BookExceptionHandler {
     public ResponseEntity<ErrorResponse> notFoundBookWithId(IncorrectBookIdException e) {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.BOOK_NOT_FOUND, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OpenLibraryException.class)
+    public ResponseEntity<ErrorResponse> getBadResponseFromOpenLibrary(OpenLibraryException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.OPEN_LIBRARY_ERROR, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

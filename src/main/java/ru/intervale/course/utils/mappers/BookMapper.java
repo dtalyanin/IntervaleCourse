@@ -6,8 +6,15 @@ import ru.intervale.course.model.Book;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Конвертация результата запроса в БД в класс книги
+ */
 public class BookMapper implements RowMapper<Book> {
 
+    /**
+     * Конвертация результата запроса в БД в класс книги
+     * @return книга, сформированная из запроса к БД
+     */
     @Override
     public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Book(
