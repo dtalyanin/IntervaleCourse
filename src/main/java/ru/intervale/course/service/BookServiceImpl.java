@@ -72,7 +72,7 @@ public class BookServiceImpl implements BookService {
         if (!bookDao.editBook(book)) {
             throw new IncorrectBookIdException(NO_BOOK_WITH_ID);
         }
-        return new BookLibraryResult(OperationType.EDIT, OPERATION_SUCCESSFUL + id);
+        return new BookLibraryResult(OperationType.EDIT, OPERATION_SUCCESSFUL);
     }
 
     /**
@@ -85,7 +85,7 @@ public class BookServiceImpl implements BookService {
         if (!bookDao.deleteBookById(id)) {
             throw new IncorrectBookIdException(NO_BOOK_WITH_ID);
         }
-        return new BookLibraryResult(OperationType.DELETE, OPERATION_SUCCESSFUL + id);
+        return new BookLibraryResult(OperationType.DELETE, OPERATION_SUCCESSFUL);
     }
 
     /**
