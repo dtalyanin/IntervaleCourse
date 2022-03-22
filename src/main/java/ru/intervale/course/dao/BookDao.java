@@ -34,16 +34,16 @@ public interface BookDao {
     void addBook(Book book);
 
     /**
-     * Заменяет книгу у
+     * Измененяет книгу с указанным ID в БД
      * @param book книга для замены в БД
-     * @return возвращает, выполнен ли запрос
+     * @return логический результат выполнения запроса
      */
     boolean editBook(Book book);
 
     /**
      * Удаляет запись с указанным ID из БД
      * @param id ID для удаления в БД
-     * @return возвращает, выполнен ли запрос
+     * @return логический результат выполнения запроса
      */
     boolean deleteBookById(int id);
 }

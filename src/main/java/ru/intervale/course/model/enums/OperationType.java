@@ -1,7 +1,7 @@
 package ru.intervale.course.model.enums;
 
 /**
- * Перечисление для вариантов операций к БД, возвращаемых в качестве ответа
+ * Тип операции с книгой
  */
 public enum OperationType {
     ADD, EDIT, DELETE

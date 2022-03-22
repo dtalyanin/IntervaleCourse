@@ -1,4 +1,4 @@
-package ru.intervale.course.external.open_library.exception;
+package ru.intervale.course.external.openlibrary.exception;
 
 /**
  * Ошибка при обращении к API Open Library
@@ -6,10 +6,5 @@ package ru.intervale.course.external.open_library.exception;
 public class OpenLibraryException extends RuntimeException {
     public OpenLibraryException(String message) {
         super(message);
-    }
-
-    @Override
-    public String toString() {
-        return "Exception in Open Library: " + getMessage();
     }
 }

@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class BookControllerTest {
     @Autowired
+    ObjectMapper mapper;
+    @Autowired
     private MockMvc mockMvc;
     @Mock
     BookServiceImpl service;
@@ -44,7 +46,7 @@ class BookControllerTest {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getBookById.id",
                 0, "ID cannot be less than 1");
         mockMvc.perform(get("/book/0")).andExpect(status().isBadRequest()).andExpect(
-                content().json(new ObjectMapper().writeValueAsString(errorResponse)));
+                content().json(mapper.writeValueAsString(errorResponse)));
     }
 
     @Test
@@ -53,7 +55,6 @@ class BookControllerTest {
                 100, 200, BigDecimal.valueOf(2.56));
         controller.editBook(1, book);
         verify(service, times(1)).editBook(anyInt(), any(Book.class));
-        ObjectMapper mapper = new ObjectMapper();
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "editBook.id",
                 0, "ID cannot be less than 1");
         mockMvc.perform(post("/edit/0").contentType(MediaType.APPLICATION_JSON).content(mapper
@@ -69,7 +70,6 @@ class BookControllerTest {
         Book book = new Book(1, "123-1-123-12345-1", "Book 1", "Perumov",
                 100, 200, BigDecimal.valueOf(2.56));
         controller.addBook(book);
-        ObjectMapper mapper = new ObjectMapper();
         verify(service, times(1)).addBook(any(Book.class));
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "author",
                 "Perumov", "Incorrect format. Use X.X. XXXX");
@@ -84,7 +84,7 @@ class BookControllerTest {
         verify(service, times(1)).deleteBookById(anyInt());
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "deleteBook.id",
                 0, "ID cannot be less than 1");
-        mockMvc.perform(delete("/book/0")).andExpect(status().isBadRequest()).andExpect(
-                content().json(new ObjectMapper().writeValueAsString(errorResponse)));
+        mockMvc.perform(delete("/delete/0")).andExpect(status().isBadRequest()).andExpect(
+                content().json(mapper.writeValueAsString(errorResponse)));
     }
 }

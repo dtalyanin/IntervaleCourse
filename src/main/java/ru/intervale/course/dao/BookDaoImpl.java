@@ -10,7 +10,7 @@ import ru.intervale.course.utils.mappers.BookMapper;
 import java.util.*;
 
 /**
- * Класс для выполнения операция по обращению к БД
+ * Выполнение операций по обращению к БД
  */
 @Repository
 public class BookDaoImpl implements BookDao {
@@ -75,9 +75,9 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Заменяет книгу у
+     * Измененяет книгу с указанным ID в БД
      * @param book книга для замены в БД
-     * @return возвращает, выполнен ли запрос
+     * @return логический результат выполнения запроса
      */
     @Override
     public boolean editBook(Book book) {
@@ -94,7 +94,7 @@ public class BookDaoImpl implements BookDao {
     /**
      * Удаляет запись с указанным ID из БД
      * @param id ID для удаления в БД
-     * @return возвращает, выполнен ли запрос
+     * @return логический результат выполнения запроса
      */
     @Override
     public boolean deleteBookById(int id) {

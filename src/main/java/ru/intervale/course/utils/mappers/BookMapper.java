@@ -7,12 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Конвертация результата запроса в БД в класс книги
+ * Конвертация результата запроса в БД в книгу
  */
 public class BookMapper implements RowMapper<Book> {
 
     /**
-     * Конвертация результата запроса в БД в класс книги
+     * Конвертирует результат запроса в БД в объект класса Book
      * @return книга, сформированная из запроса к БД
      */
     @Override

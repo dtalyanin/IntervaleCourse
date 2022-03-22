@@ -5,10 +5,10 @@ import lombok.Data;
 import ru.intervale.course.model.enums.OperationType;
 
 /**
- * Класс, содержащий сведения о результатах выполнения операции при обращении к БД
+ * Результат выполнения операции с книгой
  */
 @Data
-@Schema(description = "Класс, содержащий сведения о результатах выполнения операции при обращении к БД")
+@Schema(description = "Результат выполнения операции с книгой")
 public class BookLibraryResult {
     private OperationType operation;
     private String result;

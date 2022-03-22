@@ -1,17 +1,17 @@
-package ru.intervale.course.external.open_library.utils;
+package ru.intervale.course.external.openlibrary.utils;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
-import ru.intervale.course.external.open_library.exception.OpenLibraryException;
+import ru.intervale.course.external.openlibrary.exception.OpenLibraryException;
 
 import java.io.IOException;
 import java.net.URI;
 
 /**
- * Класс для определения, есть ли в ответе Open Library API ошибка или нет.
+ * Обработчик ошибок ответа Open Library API.
  */
 @Component
 public class OpenLibraryErrorHandler implements ResponseErrorHandler {
@@ -28,7 +28,7 @@ public class OpenLibraryErrorHandler implements ResponseErrorHandler {
     }
 
     /**
-     * Генерация ошибки в соответствии с кодом ответа от Open Library API
+     * Генерирует ошибку в соответствии с кодом ответа от Open Library API
      * @param response ответ от Open Library API с ошибкой
      */
     @Override
@@ -41,7 +41,7 @@ public class OpenLibraryErrorHandler implements ResponseErrorHandler {
     }
 
     /**
-     * Генерация ошибки в соответствии с кодом ответа от Open Library API с дополнительной информацией
+     * Генерирует ошибку в соответствии с кодом ответа от Open Library API с дополнительной информацией
      * @param url адрес по которому шел запрос
      * @param method метод запроса
      * @param response ответ от Open Library API с ошибкой

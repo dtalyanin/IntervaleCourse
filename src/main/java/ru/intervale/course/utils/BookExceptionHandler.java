@@ -10,7 +10,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.intervale.course.exception.IncorrectBookIdException;
-import ru.intervale.course.external.open_library.exception.OpenLibraryException;
+import ru.intervale.course.external.openlibrary.exception.OpenLibraryException;
 import ru.intervale.course.model.enums.ErrorCode;
 import ru.intervale.course.model.responses.ErrorResponse;
 
@@ -47,7 +47,7 @@ public class BookExceptionHandler {
 
     @ExceptionHandler(OpenLibraryException.class)
     public ResponseEntity<ErrorResponse> getBadResponseFromOpenLibrary(OpenLibraryException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.OPEN_LIBRARY_ERROR, e.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.EXTERNAL_SYSTEM_ERROR, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

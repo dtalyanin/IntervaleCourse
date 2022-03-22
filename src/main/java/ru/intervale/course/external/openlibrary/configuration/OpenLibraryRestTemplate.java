@@ -1,4 +1,4 @@
-package ru.intervale.course.external.open_library.configuration;
+package ru.intervale.course.external.openlibrary.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -6,10 +6,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.external.open_library.utils.OpenLibraryErrorHandler;
+import ru.intervale.course.external.openlibrary.utils.OpenLibraryErrorHandler;
 
 /**
- * Класс конфигурации RestTemplate для обращения к API Open Library
+ * Конфигурации RestTemplate для обращения к API Open Library
  */
 @Configuration
 @ConfigurationProperties(prefix = "external.open-library")

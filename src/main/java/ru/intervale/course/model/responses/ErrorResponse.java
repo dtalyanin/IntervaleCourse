@@ -7,7 +7,7 @@ import lombok.Data;
 import ru.intervale.course.model.enums.ErrorCode;
 
 /**
- * Класс, содержащий информацию об возникшей ошибке и её причинах
+ * Сведения об ошибке при выполнении операции
  */
 @Data
 @AllArgsConstructor

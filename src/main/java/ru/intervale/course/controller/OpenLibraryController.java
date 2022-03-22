@@ -9,10 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
+import ru.intervale.course.model.BookDTO;
 import ru.intervale.course.service.BookService;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Контроллер для работы с книгами из БД и библиотеки Open Library
@@ -25,14 +27,16 @@ public class OpenLibraryController {
     @Autowired
     BookService service;
 
+    @Autowired
+    OpenLibraryService olservice;
     /**
-     * Книги заданного автора из БД и библиотеки Open Library
+     * Получение книг заданного автора из БД и библиотеки Open Library
      * @param author Ф.И.О. автора
-     * @return Найденные книги указанного автора найдены в БД
+     * @return список книг указанного автора
      */
-    @Operation(summary = "Книги заданного автора из БД и библиотеки Open Library.")
+    @Operation(summary = "Получение книг заданного автора из БД и библиотеки Open Library.")
     @GetMapping("/author/{author}")
-    public ResponseEntity<Map<String, Object>> getBooksByAuthor(
+    public ResponseEntity<List<BookDTO>> getBooksByAuthor(
             @PathVariable @NotBlank(message = "Author name for search cannot be empty") String author) {
         return new ResponseEntity<>(service.getBooksByAuthor(author), HttpStatus.OK);
     }

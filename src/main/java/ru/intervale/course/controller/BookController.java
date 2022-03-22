@@ -26,32 +26,32 @@ public class BookController {
     private static  final String ID_MESSAGE = "ID cannot be less than 1";
 
     /**
-     * Получить все книги из БД
+     * Получение всех книг из БД
      * @return Список книг из БД
      */
-    @Operation(summary = "Получить все книги из БД.")
+    @Operation(summary = "Получение всех книг из БД.")
     @GetMapping("/books")
     public List<Book> getBooks() {
         return bookService.getBooks();
     }
 
     /**
-     * "Получить книгу из БД по её ID
+     * "Получение книги из БД по её ID
      * @param id ID книги в БД
      * @return Книга с указанным ID
      */
-    @Operation(summary = "Получить книгу из БД по её ID.")
+    @Operation(summary = "Получение книги из БД по её ID.")
     @GetMapping("/book/{id}")
     public Book getBookById(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id) {
         return bookService.getBookById(id);
     }
 
     /**
-     * Изменить книгу в БД согласно переданным полям
-     * @param book Книга, содержащая поля для изменения
+     * Изменение книги с указанным ID в БД
+     * @param book Книга для изменения
      * @return Результат изменения книги в БД
      */
-    @Operation(summary = "Изменить книгу в БД согласно переданным полям.")
+    @Operation(summary = "Изменение книги с указанным ID в БД.")
     @PostMapping("/edit/{id}")
     public BookLibraryResult editBook(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id,
                                       @Valid @RequestBody Book book) {
@@ -59,22 +59,22 @@ public class BookController {
     }
 
     /**
-     * Добавить новую книгу в БД
+     * Добавление новой книги в БД
      * @param book Книга для добавления в БД
      * @return Результат добавления книги в БД
      */
-    @Operation(summary = "Добавить новую книгу в БД.")
+    @Operation(summary = "Добавление новой книги в БД.")
     @PutMapping("/add")
     public BookLibraryResult addBook(@Valid @RequestBody Book book) {
         return bookService.addBook(book);
     }
 
     /**
-     * Удалить книгу из БД по её ID
+     * Удаление книги из БД по её ID
      * @param id ID книги для удаления
      * @return Результат удаления книги из БД
      */
-    @Operation(summary = "Удалить книгу из БД по её ID.")
+    @Operation(summary = "Удаление книги из БД по её ID.")
     @DeleteMapping("/delete/{id}")
     public BookLibraryResult deleteBook(@PathVariable(value = "id") @Min(value = 1, message = ID_MESSAGE) int id) {
         return bookService.deleteBookById(id);

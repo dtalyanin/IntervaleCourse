@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 /**
- * Класс представления книги из БД
+ * Книга из БД
  */
 @Data
 @AllArgsConstructor

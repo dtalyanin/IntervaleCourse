@@ -4,15 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.exception.IncorrectBookIdException;
-import ru.intervale.course.external.open_library.model.OpenLibraryBook;
-import ru.intervale.course.external.open_library.service.OpenLibraryService;
+import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
+import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.BookDTO;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
+import ru.intervale.course.utils.mappers.BookDTOMapper;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Получение данных по книгам из базы данных. Поддерживается интеграция полученных данных из библиотеки Open Library
@@ -23,6 +24,8 @@ public class BookServiceImpl implements BookService {
     private BookDao bookDao;
     @Autowired
     private OpenLibraryService openLibraryService;
+    @Autowired
+    BookDTOMapper mapper;
 
     private static final String NO_BOOK_WITH_ID = "No book with ID presents in library";
     private static final String OPERATION_SUCCESSFUL = "Operation completed successfully";
@@ -38,7 +41,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * Возвращает книгу из БД с указанным ID
-     * @param id ID книги в БЗ
+     * @param id ID книги в БД
      * @return книга с указанным ID
      */
     @Override
@@ -50,10 +53,11 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+
     /**
-     * Изменяет поля книги с ID, равным ID переданного BookDTO, согласно списку установленных полей данного DTO
-     * @param book BookDTO с полями, которые необходимом изменить в БД
-     * @return класс, содержащий результат выполнения запроса
+     * Добавляет новую запись книги в БД
+     * @param book добавляемая книга в БД
+     * @return результат выполнения запроса
      */
     @Override
     public BookLibraryResult addBook(Book book) {
@@ -62,9 +66,9 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Добавляет новую запись книги в БД
-     * @param book добавляемая книга в БД
-     * @return класс, содержащий результат выполнения запроса
+     * Измененяет книгу с указанным ID в БД
+     * @param book книга для замены в БД
+     * @return результат выполнения запроса
      */
     @Override
     public BookLibraryResult editBook(int id, Book book) {
@@ -89,19 +93,21 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Возвращает Map (ключ - место поиска, значение - список книг) всех книг автора из БД и Open Library
+     * Возвращает список всех книг автора из БД и Open Library
      * @param author данные автора для поиска
      * @return список книг указанного автора
      */
     @Override
-    public Map<String, Object> getBooksByAuthor(String author) {
-        String noBooksFound = "No books found for author '" + author + "'.";
-        String booksFrom = "Books from ";
-        Map<String, Object> books = new LinkedHashMap<>();
+    public List<BookDTO> getBooksByAuthor(String author) {
         List<OpenLibraryBook> booksFromOl = openLibraryService.getBooksByAuthorFromOpenLibrary(author);
         List<Book> booksFromDb = bookDao.getBooksByAuthor(author);
-        books.put(booksFrom + "Open Library", booksFromOl.size() != 0 ? booksFromOl : noBooksFound);
-        books.put(booksFrom + "database", booksFromDb.size() != 0 ? booksFromDb : noBooksFound);
+        List<BookDTO> books = new ArrayList<>();
+        for (OpenLibraryBook olBook: booksFromOl) {
+            books.add(mapper.convertOpenLibraryBookToBookDto(olBook));
+        }
+        for (Book bookDb: booksFromDb) {
+            books.add(mapper.convertBookToBookDto(bookDb));
+        }
         return books;
     }
 }
