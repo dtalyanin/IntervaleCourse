@@ -1,5 +1,6 @@
 package ru.intervale.course.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
+@Hidden
 @RestController
 public class HttpController {
     @GetMapping("/hello")

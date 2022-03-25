@@ -9,6 +9,9 @@ import ru.intervale.course.model.Book;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+/**
+ * Конвертация JSON в объект класса Book
+ */
 public class BookDeserializer extends StdDeserializer<Book> {
 
     public BookDeserializer() {
@@ -19,6 +22,10 @@ public class BookDeserializer extends StdDeserializer<Book> {
         super(vc);
     }
 
+    /**
+     * Конвертирует JSON в объект класса Book
+     * @return объект класса Book, сконвертированный из JSON
+     */
     @Override
     public Book deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);

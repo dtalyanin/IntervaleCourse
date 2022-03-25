@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.intervale.course.model.enums.ErrorCode;
 
+/**
+ * Сведения об ошибке при выполнении операции
+ */
 @Data
 @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
