@@ -32,7 +32,7 @@ public class OpenLibraryService {
         List<String> openLibraryBookIds = getOpenLibraryBookIds(author);
         List<BookDTO> books = new ArrayList<>();
         for (String olId: openLibraryBookIds) {
-            BookDTO book = template.getForObject( BOOK_SEARCH+ olId +SEARCH_RESPONSE_FORMAT, BookDTO.class);
+            BookDTO book = template.getForObject( BOOK_SEARCH + olId + SEARCH_RESPONSE_FORMAT, BookDTO.class);
             book.setId(olId);
             books.add(book);
         }
