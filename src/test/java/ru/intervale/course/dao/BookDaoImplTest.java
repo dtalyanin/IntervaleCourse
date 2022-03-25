@@ -6,6 +6,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.utils.mappers.BookDTOMapper;
 import ru.intervale.course.utils.mappers.BookMapper;
 
 import java.math.BigDecimal;
@@ -42,8 +44,9 @@ class BookDaoImplTest {
 
     @Test
     void getBooksByAuthor() {
-        when(template.query(anyString(), any(BookMapper.class), eq("%perumov%"))).thenReturn(Arrays.asList(firstBook, secondBook));
-        assertEquals(Arrays.asList(firstBook, secondBook), bookDao.getBooksByAuthor("perumov"));
+        BookDTO book = BookDTO.builder().build();
+        when(template.query(anyString(), any(BookDTOMapper.class), eq("%perumov%"))).thenReturn(Arrays.asList(book, book));
+        assertEquals(Arrays.asList(book, book), bookDao.getBooksByAuthor("perumov"));
     }
 
     @Test

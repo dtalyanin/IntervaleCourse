@@ -5,6 +5,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.utils.mappers.BookDTOMapper;
 import ru.intervale.course.utils.mappers.BookMapper;
 
 import java.util.*;
@@ -55,8 +57,8 @@ public class BookDaoImpl implements BookDao {
      * @return список книг заданного автора
      */
     @Override
-    public List<Book> getBooksByAuthor(String author) {
-        return template.query(SELECT_BY_AUTHOR, new BookMapper(), '%' + author + '%');
+    public List<BookDTO> getBooksByAuthor(String author) {
+        return template.query(SELECT_BY_AUTHOR, new BookDTOMapper(), '%' + author + '%');
     }
 
     /**
@@ -75,7 +77,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     /**
-     * Измененяет книгу с указанным ID в БД
+     * Заменяет книгу с указанным ID в БД на переданную в качестве параметра книгу
      * @param book книга для замены в БД
      * @return логический результат выполнения запроса
      */

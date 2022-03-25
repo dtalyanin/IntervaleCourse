@@ -1,11 +1,11 @@
 package ru.intervale.course.external.openlibrary.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.external.openlibrary.model.AuthorsBooks;
-import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
+import ru.intervale.course.model.BookDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +28,26 @@ public class OpenLibraryService {
      * @param author данные автора для поиска
      * @return список книг указанного автора, содержащихся в библиотеке Open Library
      */
-
-    public List<OpenLibraryBook> getBooksByAuthorFromOpenLibrary(String author) {
-        AuthorsBooks authorsBooks = template.getForObject(AUTHOR_SEARCH + author, AuthorsBooks.class);
-        List<OpenLibraryBook> books = new ArrayList<>();
-        for (String olid: authorsBooks.getBooksOlid()) {
-            OpenLibraryBook book = template.getForObject( BOOK_SEARCH+ olid +SEARCH_RESPONSE_FORMAT, OpenLibraryBook.class);
-            book.setOlid(olid);
+    public List<BookDTO> getBooksByAuthor(String author) {
+        List<String> openLibraryBookIds = getOpenLibraryBookIds(author);
+        List<BookDTO> books = new ArrayList<>();
+        for (String olId: openLibraryBookIds) {
+            BookDTO book = template.getForObject( BOOK_SEARCH+ olId +SEARCH_RESPONSE_FORMAT, BookDTO.class);
+            book.setId(olId);
             books.add(book);
         }
         return books;
+    }
+
+    /**
+     * Возвращает список из ID книг указанного автора в библиотеке Open Library
+     * @param author данные автора для поиска
+     * @return список ID всех книг автора
+     */
+    private List<String> getOpenLibraryBookIds(String author) {
+        JsonNode node = template.getForObject(AUTHOR_SEARCH + author, JsonNode.class);
+        List<String> openLibraryBookIds = new ArrayList<>();
+        node.findValues("edition_key").forEach(arrayNode -> arrayNode.forEach(id -> openLibraryBookIds.add(id.asText())));
+        return openLibraryBookIds;
     }
 }

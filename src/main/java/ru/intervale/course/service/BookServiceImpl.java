@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.exception.IncorrectBookIdException;
-import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
@@ -66,7 +65,7 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Измененяет книгу с указанным ID в БД
+     * Заменяет книгу с указанным ID в БД на переданную в качестве параметра книгу
      * @param book книга для замены в БД
      * @return результат выполнения запроса
      */
@@ -99,15 +98,8 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public List<BookDTO> getBooksByAuthor(String author) {
-        List<OpenLibraryBook> booksFromOl = openLibraryService.getBooksByAuthorFromOpenLibrary(author);
-        List<Book> booksFromDb = bookDao.getBooksByAuthor(author);
-        List<BookDTO> books = new ArrayList<>();
-        for (OpenLibraryBook olBook: booksFromOl) {
-            books.add(mapper.convertOpenLibraryBookToBookDto(olBook));
-        }
-        for (Book bookDb: booksFromDb) {
-            books.add(mapper.convertBookToBookDto(bookDb));
-        }
+        List<BookDTO> books = new ArrayList<>(openLibraryService.getBooksByAuthor(author));
+        books.addAll(bookDao.getBooksByAuthor(author));
         return books;
     }
 }

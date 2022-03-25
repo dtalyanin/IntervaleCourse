@@ -28,7 +28,7 @@ public interface BookService {
     BookLibraryResult addBook(Book book);
 
     /**
-     * Измененяет книгу с указанным ID в БД
+     * Заменяет книгу с указанным ID в БД на переданную в качестве параметра книгу
      * @param book книга для замены в БД
      * @return результат выполнения запроса
      */

@@ -1,38 +1,39 @@
 package ru.intervale.course.external.openlibrary.service;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.external.openlibrary.model.AuthorsBooks;
-import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
+import ru.intervale.course.model.BookDTO;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class OpenLibraryServiceTest {
+    @Autowired
+    ObjectMapper mapper;
     @Mock
     private RestTemplate template;
-    @Mock
-    private AuthorsBooks authorsBooks;
     @InjectMocks
     private OpenLibraryService service;
 
     @Test
-    void getBooksByAuthorFromOpenLibrary() {
-        OpenLibraryBook book = OpenLibraryBook.builder().build();
-        when(template.getForObject(anyString(), eq(AuthorsBooks.class))).thenReturn(authorsBooks);
-        when(template.getForObject(anyString(), eq(OpenLibraryBook.class))).thenReturn(book);
-        List<String> olids = new ArrayList<>();
-        olids.add("123456789");
-        olids.add("987654321");
-        when(authorsBooks.getBooksOlid()).thenReturn(olids);
-        assertEquals(Arrays.asList(book, book), service.getBooksByAuthorFromOpenLibrary("perumov"));
+    void getBooksByAuthorFromOpenLibrary() throws IOException {
+        BookDTO book = BookDTO.builder().build();
+        JsonFactory factory = mapper.getFactory();
+        JsonParser parser = factory.createParser("{\"edition_key\":[\"1\", \"2\"]}");
+        when(template.getForObject(anyString(), eq(JsonNode.class))).thenReturn(mapper.readTree(parser));
+        when(template.getForObject(anyString(), eq(BookDTO.class))).thenReturn(book);
+        assertEquals(Arrays.asList(book, book), service.getBooksByAuthor("perumov"));
     }
 }

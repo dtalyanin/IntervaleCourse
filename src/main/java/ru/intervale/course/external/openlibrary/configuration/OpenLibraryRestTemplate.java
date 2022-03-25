@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.intervale.course.external.openlibrary.utils.OpenLibraryErrorHandler;
 
 /**
- * Конфигурации RestTemplate для обращения к API Open Library
+ * RestTemplate для обращения к API Open Library
  */
 @Configuration
 @ConfigurationProperties(prefix = "external.open-library")

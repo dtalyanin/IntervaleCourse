@@ -3,30 +3,24 @@ package ru.intervale.course.service;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.intervale.course.dao.BookDaoImpl;
 import ru.intervale.course.exception.IncorrectBookIdException;
-import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
-import ru.intervale.course.utils.mappers.BookDTOMapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class BookServiceImplTest {
-    @Mock
-    BookDTOMapper mapper;
     @Mock
     private BookDaoImpl bookDao;
     @Mock
@@ -78,14 +72,11 @@ class BookServiceImplTest {
     @Test
     void getBooksByAuthor() {
         when(bookDao.getBooksByAuthor("nikolaev")).thenReturn(new ArrayList<>());
-        when(libraryService.getBooksByAuthorFromOpenLibrary("nikolaev")).thenReturn(new ArrayList<>());
+        when(libraryService.getBooksByAuthor("nikolaev")).thenReturn(new ArrayList<>());
         assertEquals(new ArrayList<>(), service.getBooksByAuthor("nikolaev"));
-        OpenLibraryBook olBook = OpenLibraryBook.builder().build();
         BookDTO bookDTO = BookDTO.builder().build();
-        when(bookDao.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(firstBook, secondBook));
-        when(libraryService.getBooksByAuthorFromOpenLibrary("perumov")).thenReturn(Arrays.asList(olBook));
-        when(mapper.convertBookToBookDto(any(Book.class))).thenReturn(bookDTO);
-        when(mapper.convertOpenLibraryBookToBookDto(any(OpenLibraryBook.class))).thenReturn(bookDTO);
+        when(bookDao.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(bookDTO, bookDTO));
+        when(libraryService.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(bookDTO));
         assertEquals(Arrays.asList(bookDTO, bookDTO, bookDTO), service.getBooksByAuthor("perumov"));
     }
 }

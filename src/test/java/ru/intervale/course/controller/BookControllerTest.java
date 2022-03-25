@@ -87,4 +87,14 @@ class BookControllerTest {
         mockMvc.perform(delete("/delete/0")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(errorResponse)));
     }
+
+    @Test
+    void getBooksByAuthor() throws Exception {
+        controller.getBooksByAuthor("perumov");
+        verify(service, times(1)).getBooksByAuthor("perumov");
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getBooksByAuthor.author",
+                "  ", "Author name for search cannot be empty");
+        mockMvc.perform(get("/author/  ")).andExpect(status().isBadRequest()).andExpect(
+                content().json(new ObjectMapper().writeValueAsString(errorResponse)));
+    }
 }

@@ -1,51 +1,33 @@
 package ru.intervale.course.utils.mappers;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.intervale.course.external.openlibrary.model.OpenLibraryBook;
-import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
- * Конвертация книги из БД и библиотеки Open Library в её представление объекта класса BookDTO
+ * Конвертация результата запроса в БД в представление книги
  */
 @Component
-public class BookDTOMapper {
+public class BookDTOMapper implements RowMapper<BookDTO> {
 
     /**
-     * Конвертирует книгу из БД в объект класса BookDTO
-     * @param book книга для конвертации
-     * @return представление книги в виде объекта класса BookDTO
+     * Конвертирует результата запроса в БД в представление книги
+     * @return представление книги, сформированное из запроса к БД
      */
-    public BookDTO convertBookToBookDto(Book book) {
-        BookDTO.BookDTOBuilder dto = BookDTO.builder();
-        dto.name(book.getName());
-        dto.isbn(Arrays.asList(book.getIsbn()));
-        dto.authors(Arrays.asList(book.getAuthor()));
-        dto.pageCount(book.getPageCount());
-        dto.weight(book.getWeight() + " grams");
-        dto.price(book.getPrice());
-        return dto.build();
-    }
-
-    /**
-     * Конвертирует книгу из библиотеки Open Library в объект класса BookDTO
-     * @param book книга для конвертации
-     * @return представление книги в виде объекта класса BookDTO
-     */
-    public BookDTO convertOpenLibraryBookToBookDto(OpenLibraryBook book) {
-        BookDTO.BookDTOBuilder dto = BookDTO.builder();
-        dto.id(book.getOlid());
-        dto.name(book.getTitle());
-        dto.authors(book.getAuthors());
-        dto.isbn(book.getIsbn());
-        if (book.getPagesCount() != null) {
-            dto.pageCount(book.getPagesCount());
-        }
-        if (book.getWeight() != null) {
-            dto.weight(book.getWeight());
-        }
-        return dto.build();
+    @Override
+    public BookDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return BookDTO.builder()
+                .id(String.valueOf(rs.getInt("ID")))
+                .name(rs.getString("NAME"))
+                .isbn(Arrays.asList(rs.getString("ISBN")))
+                .authors(Arrays.asList(rs.getString("AUTHOR")))
+                .weight(rs.getInt("WEIGHT") + " grams")
+                .pageCount(rs.getInt("PAGES"))
+                .price(rs.getBigDecimal("PRICE"))
+                .build();
     }
 }

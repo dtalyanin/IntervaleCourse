@@ -1,9 +1,11 @@
 package ru.intervale.course.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.intervale.course.utils.deserializers.BookDTODeserializer;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(using = BookDTODeserializer.class)
 @Schema(description = "Представление книги")
 public class BookDTO {
     private String id;

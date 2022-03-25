@@ -1,6 +1,8 @@
 package ru.intervale.course.dao;
 
 import ru.intervale.course.model.Book;
+import ru.intervale.course.model.BookDTO;
+
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ public interface BookDao {
      * @param author автор для поиска в БД
      * @return список книг заданного автора
      */
-    List<Book> getBooksByAuthor(String author);
+    List<BookDTO> getBooksByAuthor(String author);
 
     /**
      * Добавляет новую запись книги в БД
@@ -34,7 +36,7 @@ public interface BookDao {
     void addBook(Book book);
 
     /**
-     * Измененяет книгу с указанным ID в БД
+     * Заменяет книгу с указанным ID в БД на переданную в качестве параметра книгу
      * @param book книга для замены в БД
      * @return логический результат выполнения запроса
      */
