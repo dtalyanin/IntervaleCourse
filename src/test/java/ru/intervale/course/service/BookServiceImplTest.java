@@ -6,15 +6,17 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.intervale.course.dao.BookDaoImpl;
 import ru.intervale.course.exception.IncorrectBookIdException;
+import ru.intervale.course.external.alfabank.service.AlfaBankService;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
+import ru.intervale.course.utils.mappers.BookWithCurrencyMapper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,6 +27,8 @@ class BookServiceImplTest {
     private BookDaoImpl bookDao;
     @Mock
     private OpenLibraryService libraryService;
+    @Mock
+    private AlfaBankService alfaBankService;
     @InjectMocks
     private BookServiceImpl service;
 
@@ -78,5 +82,27 @@ class BookServiceImplTest {
         when(bookDao.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(bookDTO, bookDTO));
         when(libraryService.getBooksByAuthor("perumov")).thenReturn(Arrays.asList(bookDTO));
         assertEquals(Arrays.asList(bookDTO, bookDTO, bookDTO), service.getBooksByAuthor("perumov"));
+    }
+
+    @Test
+    void getBooksByNameWithCurrentPrice() {
+        Map<String, BigDecimal> rates = new HashMap<>();
+        List<Book> dbBooks = new ArrayList<>();
+        List<BookWithCurrency> books = new ArrayList<>();
+        when(alfaBankService.getTodayRates()).thenReturn(rates);
+        when(alfaBankService.getRatesInRange(anyString(), anyInt())).thenReturn(rates);
+        when(bookDao.getBooksByName(anyString())).thenReturn(dbBooks);
+        assertEquals(books, service.getBooksByNameWithCurrentPrice("aaaa"));
+        dbBooks.add(firstBook);
+        dbBooks.add(secondBook);
+        rates.put("01.01.2022", new BigDecimal("1.10"));
+        rates.put("02.01.2022", new BigDecimal("1.12"));
+        books.add(BookWithCurrencyMapper.convertFromBook(firstBook, rates));
+        books.add(BookWithCurrencyMapper.convertFromBook(secondBook, rates));
+        assertEquals(books,  service.getBookByNameWithCurrencyPriceInRange("perumov", "usd", 2));
+    }
+
+    @Test
+    void getBookByNameWithCurrencyPriceInRange() {
     }
 }

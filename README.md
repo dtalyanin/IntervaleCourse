@@ -36,3 +36,22 @@
 
 - ознакомится: https://openlibrary.org/dev/docs/api/books;
    реализовать get запрос /{authorName}, который вернёт список книг автора из БД приложения и список книг автора на основании данных openlibrary.
+
+**Задание 4**
+
+
+Сгенерировать dto из файла:
+
+https://developerhub.alfabank.by/developerhub/api-docs/admin/partner.public/1.0.1
+
+Предложено использовать:
+
+https://github.com/swagger-api/swagger-codegen/tree/master/modules/swagger-codegen-maven-plugin
+
+Хранить для книги цену в рублях, добавить запрос получения цены по названию книги GET /price/{title}
+
+*расширить GET /price/{title}: включать стоимость в разных валютах по актуальному курсу (апи выше)
+
+**расширить GET /price/{title}: получать актуальную стоимость книги из любых источников (например litres)
+
+Реализовать GET /price/stat/{title}/{currency}, где title - наименование книги, currency - валюта. Возвращать динамику изменения цены книги в выбранной валюте 

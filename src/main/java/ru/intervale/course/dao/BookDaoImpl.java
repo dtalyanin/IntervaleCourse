@@ -24,6 +24,7 @@ public class BookDaoImpl implements BookDao {
     private static final String EDIT = "UPDATE BOOKS SET ISBN = ?, NAME = ?, AUTHOR = ?, PAGES = ?, WEIGHT = ?, PRICE = ? WHERE ID = ?";
     private static final String DELETE = "DELETE FROM BOOKS WHERE ID = ?";
     private static final String SELECT_BY_AUTHOR = "SELECT * FROM BOOKS WHERE LOWER(AUTHOR) LIKE LOWER(?)";
+    private static final String SELECT_BY_NAME = "SELECT * FROM BOOKS WHERE LOWER(NAME) LIKE LOWER(?)";
 
     /**
      * Возвращает список всех книг из базы данных
@@ -59,6 +60,16 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<BookDTO> getBooksByAuthor(String author) {
         return template.query(SELECT_BY_AUTHOR, new BookDTOMapper(), '%' + author + '%');
+    }
+
+    /**
+     * Возвращает список книг с заданным названием
+     * @param name название для поиска в БД
+     * @return список книг с заданным названием
+     */
+    @Override
+    public List<Book> getBooksByName(String name) {
+        return template.query(SELECT_BY_NAME, new BookMapper(), '%' + name + '%');
     }
 
     /**

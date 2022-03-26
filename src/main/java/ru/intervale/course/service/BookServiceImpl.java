@@ -4,15 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.intervale.course.dao.BookDao;
 import ru.intervale.course.exception.IncorrectBookIdException;
+import ru.intervale.course.external.alfabank.service.AlfaBankService;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
-import ru.intervale.course.utils.mappers.BookDTOMapper;
+import ru.intervale.course.utils.mappers.BookWithCurrencyMapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Получение данных по книгам из базы данных. Поддерживается интеграция полученных данных из библиотеки Open Library
@@ -24,7 +28,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private OpenLibraryService openLibraryService;
     @Autowired
-    BookDTOMapper mapper;
+    private AlfaBankService alfaBankService;
 
     private static final String NO_BOOK_WITH_ID = "No book with ID presents in library";
     private static final String OPERATION_SUCCESSFUL = "Operation completed successfully";
@@ -100,6 +104,42 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> getBooksByAuthor(String author) {
         List<BookDTO> books = new ArrayList<>(openLibraryService.getBooksByAuthor(author));
         books.addAll(bookDao.getBooksByAuthor(author));
+        return books;
+    }
+
+    /**
+     * Возвращает список книг с заданным названием и стоимостью в различных валютах согласно курсам на сегодняшний день,
+     * получаемым из API Альфа-банка
+     * @param title название книги для поиска
+     * @return список книг с заданным названием и стоимостью в различных валютах на сегодняшний день
+     */
+    @Override
+    public List<BookWithCurrency> getBooksByNameWithCurrentPrice(String title) {
+
+        List<BookWithCurrency> books = new ArrayList<>();
+        List<Book> dbBooks = bookDao.getBooksByName(title);
+        if (dbBooks.size() != 0) {
+            Map<String, BigDecimal> rates = alfaBankService.getTodayRates();
+            dbBooks.forEach(book -> books.add(BookWithCurrencyMapper.convertFromBook(book, rates)));
+        }
+        return books;
+    }
+
+    /**
+     * Возвращает список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     * @param title название книги для поиска
+     * @param currency код валюты согласно ISO
+     * @param period диапазон, в котором выполнить поиск курсов валют
+     * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     */
+    @Override
+    public List<BookWithCurrency> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period) {
+        List<Book> dbBooks = bookDao.getBooksByName(title);
+        List<BookWithCurrency> books = new ArrayList<>();
+        if (dbBooks.size() != 0) {
+            Map<String, BigDecimal> ratesInRange = alfaBankService.getRatesInRange(currency, period);
+            dbBooks.forEach(book -> books.add(BookWithCurrencyMapper.convertFromBook(book, ratesInRange)));
+        }
         return books;
     }
 }

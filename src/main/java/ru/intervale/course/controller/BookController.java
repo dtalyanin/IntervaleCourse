@@ -3,12 +3,11 @@ package ru.intervale.course.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.responses.BookLibraryResult;
 import ru.intervale.course.service.BookService;
 
@@ -90,8 +89,37 @@ public class BookController {
      */
     @Operation(summary = "Получение книг заданного автора из БД и библиотеки Open Library.")
     @GetMapping("/author/{author}")
-    public ResponseEntity<List<BookDTO>> getBooksByAuthor(
+    public List<BookDTO> getBooksByAuthor(
             @PathVariable @NotBlank(message = "Author name for search cannot be empty") String author) {
-        return new ResponseEntity<>(bookService.getBooksByAuthor(author), HttpStatus.OK);
+        return bookService.getBooksByAuthor(author);
+    }
+
+    /**
+     * Получение  актуальной стоимости книги по курсу Альфа-банка по её названию
+     * @param title Название книги в БД.
+     * @return Список книг с заданным названием из БД и стоимостью в различных валютах по курсу Альфа-банка
+     */
+    @GetMapping("/price/{title}")
+    @Operation(summary = "Получение актуальной стоимости книги по курсу Альфа-банка в различных валютах по её названию.")
+    public List<BookWithCurrency> getPriceByTitle(
+            @PathVariable @NotBlank(message = "Title for search cannot be empty") String title) {
+        return bookService.getBooksByNameWithCurrentPrice(title);
+    }
+
+    /**
+     * Получить стоимость книги в заданном диапазоне по дням в выбранной валюте по курсу НБ РБ (выходные дни не отображаются)
+     * @param title название книги для поиска
+     * @param currency код валюты согласно ISO
+     * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     */
+    @GetMapping("/price/stat/{title}/{currency}/{period}")
+    @Operation(summary = "Получить стоимость книги в заданном диапазоне по дням в выбранной валюте по курсу НБ РБ.")
+    public List<BookWithCurrency> getPriceByTitleInRange(
+            @PathVariable @NotBlank(message = "Title for search cannot be empty") String title,
+            @PathVariable @NotBlank(message = "Currency for search cannot be empty")
+            @Pattern(regexp = "\\p{IsAlphabetic}{3}", message = "Incorrect format. Use ISO format for currency (for example USD)") String currency,
+            @PathVariable @Min(value = 2, message = "Minimum period is 2 day")
+            @Max(value = 30, message = "Maximum period is 30 days") int period) {
+        return bookService.getBookByNameWithCurrencyPriceInRange(title, currency, period);
     }
 }

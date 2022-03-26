@@ -50,6 +50,12 @@ class BookDaoImplTest {
     }
 
     @Test
+    void getBooksByName() {
+        when(template.query(anyString(), any(BookMapper.class), eq("%potter%"))).thenReturn(Arrays.asList(firstBook, secondBook));
+        assertEquals(Arrays.asList(firstBook, secondBook), bookDao.getBooksByName("potter"));
+    }
+
+    @Test
     void addBook() {
         bookDao.addBook(firstBook);
         verify(template, times(1)).update(anyString(), anyString(), anyString(),
