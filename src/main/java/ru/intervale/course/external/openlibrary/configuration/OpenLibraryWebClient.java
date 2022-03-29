@@ -2,20 +2,18 @@ package ru.intervale.course.external.openlibrary.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.external.openlibrary.utils.OpenLibraryErrorHandler;
-import ru.intervale.course.utils.interceptors.RestTemplateLogInterceptor;
+import org.springframework.web.reactive.function.client.WebClient;
+import ru.intervale.course.utils.filters.WebClientFilter;
 
 /**
- * RestTemplate для обращения к API Open Library
+ * WebClient для обращения к API Open Library
  */
 @Configuration
 @ConfigurationProperties(prefix = "external.open-library")
 @Data
-public class OpenLibraryRestTemplate {
+public class OpenLibraryWebClient {
     private String baseUrl;
 
     /**
@@ -23,11 +21,7 @@ public class OpenLibraryRestTemplate {
      * @return сконфигурированный RestTemplate
      */
     @Bean("OpenLibrary")
-    public RestTemplate restTemplate() {
-        return new RestTemplateBuilder()
-                .rootUri(baseUrl)
-                .errorHandler(new OpenLibraryErrorHandler())
-                .interceptors(new RestTemplateLogInterceptor())
-                .build();
+    public WebClient webClient() {
+        return WebClient.builder().baseUrl(baseUrl).filter(new WebClientFilter()).build();
     }
 }
