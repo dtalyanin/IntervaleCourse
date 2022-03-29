@@ -20,8 +20,12 @@ public class OpenLibraryWebClient {
      * Добавляет к RestTemplate базовый URL, ErrorHandler, Interceptor для обращения к API Open Library
      * @return сконфигурированный RestTemplate
      */
-    @Bean("OpenLibrary")
+    @Bean
     public WebClient webClient() {
-        return WebClient.builder().baseUrl(baseUrl).filter(new WebClientFilter()).build();
+        return WebClient.builder()
+                .baseUrl(baseUrl)
+                .filter(new WebClientFilter())
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 10))
+                .build();
     }
 }

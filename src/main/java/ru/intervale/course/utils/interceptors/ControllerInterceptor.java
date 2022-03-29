@@ -24,7 +24,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
      * @return true, чтобы цепочка выполнения продолжалась со следующим перехватчиком
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         log.info("REQUEST - URL: {}, METHOD: {}", request.getRequestURL(), request.getMethod());
         return true;
     }
@@ -37,7 +37,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
      * @param modelAndView модель, возвращемая обработчиком (также может быть нулевой).
      */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         log.info("RESPONSE - STATUS CODE: {}", HttpStatus.valueOf(response.getStatus()));
     }
 
@@ -49,9 +49,9 @@ public class ControllerInterceptor implements HandlerInterceptor {
      * @param ex любое исключение, возникающее при выполнении обработчика
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if (response.getStatus() >= 400) {
-            log.info("RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        if (ex != null) {
+            log.error("RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
         }
     }
 

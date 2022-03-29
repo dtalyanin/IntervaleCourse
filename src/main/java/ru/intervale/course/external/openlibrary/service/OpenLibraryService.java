@@ -1,10 +1,9 @@
 package ru.intervale.course.external.openlibrary.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import ru.intervale.course.model.BookDTO;
@@ -16,9 +15,10 @@ import java.util.List;
  * Получение данных по книгам из библиотеки Open Library
  */
 @Service
+@AllArgsConstructor
 public class OpenLibraryService {
     @Autowired
-    WebClient webClient;
+    private WebClient webClient;
 
     private final static String AUTHOR_SEARCH = "/search.json?author=";
     private final static String BOOK_SEARCH = "/api/books?bibkeys=OLID:";
