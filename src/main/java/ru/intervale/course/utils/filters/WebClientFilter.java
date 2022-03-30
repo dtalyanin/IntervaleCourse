@@ -16,11 +16,11 @@ public class WebClientFilter implements ExchangeFilterFunction{
 
     @Override
     public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
-        log.info("REQUEST - URL: {}, METHOD: {}", request.url(), request.method());
+        log.info("OPEN LIBRARY REQUEST - URL: {}, METHOD: {}", request.url(), request.method());
         return next.exchange(request).doOnNext(response -> {
             HttpStatus status = response.statusCode();
             if (status.is2xxSuccessful()) {
-                log.info("RESPONSE - STATUS CODE: {}, HEADERS: {}", response.statusCode(), response.headers().asHttpHeaders());
+                log.info("OPEN LIBRARY RESPONSE - STATUS CODE: {}, HEADERS: {}", response.statusCode(), response.headers().asHttpHeaders());
             }
             else if (status.is4xxClientError()) {
                 throw new ExternalException("Unable to complete request to Open Library. Bad request.");

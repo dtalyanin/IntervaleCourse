@@ -25,7 +25,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        log.info("REQUEST - URL: {}, METHOD: {}", request.getRequestURL(), request.getMethod());
+        log.info("CONTROLLER REQUEST - URL: {}, METHOD: {}", request.getRequestURL(), request.getMethod());
         return true;
     }
 
@@ -38,7 +38,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        log.info("RESPONSE - STATUS CODE: {}", HttpStatus.valueOf(response.getStatus()));
+        log.info("CONTROLLER RESPONSE - STATUS CODE: {}", HttpStatus.valueOf(response.getStatus()));
     }
 
     /**
@@ -51,7 +51,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         if (ex != null) {
-            log.error("RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
+            log.error("CONTROLLER RESPONSE ERROR: {}, EXCEPTION: {}", HttpStatus.valueOf(response.getStatus()), ex.getCause().getMessage());
         }
     }
 
