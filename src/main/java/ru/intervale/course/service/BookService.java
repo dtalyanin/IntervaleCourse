@@ -55,7 +55,7 @@ public interface BookService {
      * @param title название книги для поиска
      * @return список книг с заданным названием и стоимостью в различных валютах на сегодняшний день
      */
-    List<BookWithCurrency> getBooksByNameWithCurrentPrice(String title);
+    List<BookDTO> getBooksByNameWithCurrentPrice(String title);
 
     /**
      * Возвращает список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
@@ -64,5 +64,5 @@ public interface BookService {
      * @param period диапазон, в котором выполнить поиск курсов валют
      * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
      */
-    List<BookWithCurrency> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period);
+    List<BookDTO> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period);
 }

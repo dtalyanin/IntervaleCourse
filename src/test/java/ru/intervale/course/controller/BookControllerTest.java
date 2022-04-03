@@ -117,22 +117,22 @@ class BookControllerTest {
         ErrorResponse titleErrorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getPriceByTitleInRange.title",
                 "  ", "Title for search cannot be empty");
         ErrorResponse currencyEmptyErrorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getPriceByTitleInRange.currency",
-                "  ", "Currency for search cannot be empty");
+                "   ", "Currency for search cannot be empty");
         ErrorResponse currencyIsoErrorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getPriceByTitleInRange.currency",
                 "usdd", "Incorrect format. Use ISO format for currency (for example USD)");
         ErrorResponse minPeriodErrorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getPriceByTitleInRange.period",
                 1, "Minimum period is 2 days");
         ErrorResponse maxPeriodErrorResponse = new ErrorResponse(ErrorCode.VALIDATION_ERROR, "getPriceByTitleInRange.period",
                 35, "Maximum period is 30 days");
-        mockMvc.perform(get("/price/stat/  /usd/30")).andExpect(status().isBadRequest()).andExpect(
+        mockMvc.perform(get("/price/  /usd?period=30")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(titleErrorResponse)));
-        mockMvc.perform(get("/price/stat/perumov/  /30")).andExpect(status().isBadRequest()).andExpect(
+        mockMvc.perform(get("/price/perumov/   ?period=30")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(currencyEmptyErrorResponse)));
-        mockMvc.perform(get("/price/stat/perumov/usdd/30")).andExpect(status().isBadRequest()).andExpect(
+        mockMvc.perform(get("/price/perumov/usdd?period=30")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(currencyIsoErrorResponse)));
-        mockMvc.perform(get("/price/stat/perumov/usd/1")).andExpect(status().isBadRequest()).andExpect(
+        mockMvc.perform(get("/price/perumov/usd?period=1")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(minPeriodErrorResponse)));
-        mockMvc.perform(get("/price/stat/perumov/usd/35")).andExpect(status().isBadRequest()).andExpect(
+        mockMvc.perform(get("/price/perumov/usd?period=35")).andExpect(status().isBadRequest()).andExpect(
                 content().json(mapper.writeValueAsString(maxPeriodErrorResponse)));
     }
 }

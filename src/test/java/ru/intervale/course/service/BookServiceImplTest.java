@@ -10,10 +10,9 @@ import ru.intervale.course.external.alfabank.service.AlfaBankService;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
-import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
-import ru.intervale.course.utils.mappers.BookWithCurrencyMapper;
+import ru.intervale.course.utils.mappers.BookDTOMapper;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -88,7 +87,7 @@ class BookServiceImplTest {
     void getBooksByNameWithCurrentPrice() {
         Map<String, BigDecimal> rates = new HashMap<>();
         List<Book> dbBooks = new ArrayList<>();
-        List<BookWithCurrency> books = new ArrayList<>();
+        List<BookDTO> books = new ArrayList<>();
         when(alfaBankService.getTodayRates()).thenReturn(rates);
         when(alfaBankService.getRatesInRange(anyString(), anyInt())).thenReturn(rates);
         when(bookDao.getBooksByName(anyString())).thenReturn(dbBooks);
@@ -97,8 +96,8 @@ class BookServiceImplTest {
         dbBooks.add(secondBook);
         rates.put("01.01.2022", new BigDecimal("1.10"));
         rates.put("02.01.2022", new BigDecimal("1.12"));
-        books.add(BookWithCurrencyMapper.convertFromBook(firstBook, rates));
-        books.add(BookWithCurrencyMapper.convertFromBook(secondBook, rates));
+        books.add(BookDTOMapper.convertFromBook(firstBook, rates));
+        books.add(BookDTOMapper.convertFromBook(secondBook, rates));
         assertEquals(books,  service.getBookByNameWithCurrencyPriceInRange("perumov", "usd", 2));
     }
 

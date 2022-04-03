@@ -83,7 +83,7 @@ public class BookController {
     }
 
     /**
-     * Получение книг заданного автора из БД и библиотеки Open Library
+     * Получение книг заданного автора из всех источников
      * @param author Ф.И.О. автора
      * @return список книг указанного автора
      */
@@ -101,7 +101,7 @@ public class BookController {
      */
     @GetMapping("/price/{title}")
     @Operation(summary = "Получение актуальной стоимости книги по курсу Альфа-банка в различных валютах по её названию.")
-    public List<BookWithCurrency> getPriceByTitle(
+    public List<BookDTO> getPriceByTitle(
             @PathVariable @NotBlank(message = "Title for search cannot be empty") String title) {
         return bookService.getBooksByNameWithCurrentPrice(title);
     }
@@ -112,13 +112,13 @@ public class BookController {
      * @param currency код валюты согласно ISO
      * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
      */
-    @GetMapping("/price/stat/{title}/{currency}/{period}")
+    @GetMapping("/price/{title}/{currency}")
     @Operation(summary = "Получить стоимость книги в заданном диапазоне по дням в выбранной валюте по курсу НБ РБ.")
-    public List<BookWithCurrency> getPriceByTitleInRange(
+    public List<BookDTO> getPriceByTitleInRange(
             @PathVariable @NotBlank(message = "Title for search cannot be empty") String title,
             @PathVariable @NotBlank(message = "Currency for search cannot be empty")
             @Pattern(regexp = "\\p{IsAlphabetic}{3}", message = "Incorrect format. Use ISO format for currency (for example USD)") String currency,
-            @PathVariable @Min(value = 2, message = "Minimum period is 2 day")
+            @RequestParam @Min(value = 2, message = "Minimum period is 2 days")
             @Max(value = 30, message = "Maximum period is 30 days") int period) {
         return bookService.getBookByNameWithCurrencyPriceInRange(title, currency, period);
     }

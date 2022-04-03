@@ -20,15 +20,14 @@ import java.util.*;
  * Получение данных из API Альфа-банка
  */
 @Service
-@ComponentScan
 public class AlfaBankService {
     @Autowired
     @Qualifier("AlfaBank")
     RestTemplate template;
 
-    private final String TODAY_RATES = "/rates";
-    private final String RATES_ON_DATE = "/nationalRates?date=";
-    private final String CURRENCY_CODE = "&currencyCode=";
+    private static final String TODAY_RATES = "/rates";
+    private static final String RATES_ON_DATE = "/nationalRates?date=";
+    private static final String CURRENCY_CODE = "&currencyCode=";
     /**
      * Возвращает список курсов конвертации к 1 BYN, установленных Альфа-банком на сегоднящний день
      * @return список курсов конвертации к 1 BYN
@@ -61,7 +60,6 @@ public class AlfaBankService {
         int code = 0;
         for (NationalRate rate: nationalRates.getRates()) {
             if (rate.getIso().equalsIgnoreCase(currency)) {
-                System.out.println(1);
                 code = rate.getCode();
                 rates.put(rate.getDate().format(formatter), rate.getRate().divide(new BigDecimal(rate.getQuantity())));
                 break;
@@ -71,10 +69,8 @@ public class AlfaBankService {
             throw new ExternalException("Cannot find currency with ISO = " + currency);
         }
         while (dateStart.isBefore(dateNow)) {
-            System.out.println(2);
             dateStart = dateStart.plusDays(1);
-            System.out.println(dateStart);
-            nationalRates = template.getForObject( RATES_ON_DATE + formatter.format(dateStart) +
+            nationalRates = template.getForObject(RATES_ON_DATE + formatter.format(dateStart) +
                     CURRENCY_CODE + code, NationalRateListResponse.class);
             NationalRate nationalRate = nationalRates.getRates().get(0);
             rates.put(nationalRate.getDate().format(formatter), nationalRate.getRate().divide(new BigDecimal(nationalRate.getQuantity())));

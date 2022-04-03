@@ -10,9 +10,6 @@ import ru.intervale.course.external.alfabank.model.NationalRate;
 import ru.intervale.course.external.alfabank.model.NationalRateListResponse;
 import ru.intervale.course.external.alfabank.model.Rate;
 import ru.intervale.course.external.alfabank.model.RateListResponse;
-import ru.intervale.course.model.BookDTO;
-import ru.intervale.course.model.BookWithCurrency;
-import ru.intervale.course.utils.mappers.BookWithCurrencyMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

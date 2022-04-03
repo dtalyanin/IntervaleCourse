@@ -9,6 +9,7 @@ import ru.intervale.course.utils.deserializers.BookDTODeserializer;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Представление книги
@@ -25,5 +26,5 @@ public class BookDTO {
     private List<String> authors;
     private Integer pageCount;
     private String weight;
-    private BigDecimal price;
+    private Map<String, BigDecimal> price;
 }

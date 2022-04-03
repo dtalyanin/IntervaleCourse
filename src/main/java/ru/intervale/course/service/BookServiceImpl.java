@@ -8,10 +8,9 @@ import ru.intervale.course.external.alfabank.service.AlfaBankService;
 import ru.intervale.course.external.openlibrary.service.OpenLibraryService;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
-import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.enums.OperationType;
 import ru.intervale.course.model.responses.BookLibraryResult;
-import ru.intervale.course.utils.mappers.BookWithCurrencyMapper;
+import ru.intervale.course.utils.mappers.BookDTOMapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -114,13 +113,12 @@ public class BookServiceImpl implements BookService {
      * @return список книг с заданным названием и стоимостью в различных валютах на сегодняшний день
      */
     @Override
-    public List<BookWithCurrency> getBooksByNameWithCurrentPrice(String title) {
-
-        List<BookWithCurrency> books = new ArrayList<>();
+    public List<BookDTO> getBooksByNameWithCurrentPrice(String title) {
+        List<BookDTO> books = new ArrayList<>();
         List<Book> dbBooks = bookDao.getBooksByName(title);
         if (dbBooks.size() != 0) {
             Map<String, BigDecimal> rates = alfaBankService.getTodayRates();
-            dbBooks.forEach(book -> books.add(BookWithCurrencyMapper.convertFromBook(book, rates)));
+            dbBooks.forEach(book -> books.add(BookDTOMapper.convertFromBook(book, rates)));
         }
         return books;
     }
@@ -133,12 +131,12 @@ public class BookServiceImpl implements BookService {
      * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
      */
     @Override
-    public List<BookWithCurrency> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period) {
+    public List<BookDTO> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period) {
         List<Book> dbBooks = bookDao.getBooksByName(title);
-        List<BookWithCurrency> books = new ArrayList<>();
+        List<BookDTO> books = new ArrayList<>();
         if (dbBooks.size() != 0) {
             Map<String, BigDecimal> ratesInRange = alfaBankService.getRatesInRange(currency, period);
-            dbBooks.forEach(book -> books.add(BookWithCurrencyMapper.convertFromBook(book, ratesInRange)));
+            dbBooks.forEach(book -> books.add(BookDTOMapper.convertFromBook(book, ratesInRange)));
         }
         return books;
     }
