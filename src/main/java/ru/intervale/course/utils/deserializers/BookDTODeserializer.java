@@ -31,7 +31,7 @@ public class BookDTODeserializer extends StdDeserializer<BookDTO> {
         JsonNode node = p.getCodec().readTree(p);
         node = node.get(node.fieldNames().next());
         return BookDTO.builder()
-                .name(node.get("title").asText())
+                .name(node.has("title") ? node.get("title").asText() : "untitled")
                 .isbn(getListOfIsbn(node.get("identifiers")))
                 .authors(getListOfAuthors(node.get("authors")))
                 .pageCount(node.has("number_of_pages")? node.get("number_of_pages").asInt() : null)

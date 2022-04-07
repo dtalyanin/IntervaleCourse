@@ -1,0 +1,11 @@
+version: '3'
+services:
+  brocker:
+    image: webcenter/activemq:latest
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: "admin"
+      AACTIVEMQ_ADMIN_PASSWORD: "root"
+      ACTIVEMQ_STATIC_QUEUES: 'audit;audit-reply'
+    ports:
+      - "8161:8161"
+      - "61616:61616"
