@@ -8,15 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.intervale.course.model.Book;
-import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.enums.ErrorCode;
 import ru.intervale.course.model.responses.ErrorResponse;
 import ru.intervale.course.service.BookServiceImpl;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,6 +51,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "editor", password = "editor", roles = "EDITOR")
     void editBook() throws Exception {
         Book book = new Book(1, "123-1-123-12345-1", "Book 1", "N. Perumov",
                 100, 200, BigDecimal.valueOf(2.56));
@@ -68,6 +68,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "editor", password = "editor", roles = "EDITOR")
     void addBook() throws Exception {
         Book book = new Book(1, "123-1-123-12345-1", "Book 1", "Perumov",
                 100, 200, BigDecimal.valueOf(2.56));
@@ -81,6 +82,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "editor", password = "editor", roles = "EDITOR")
     void deleteBook() throws Exception {
         controller.deleteBook(2);
         verify(service, times(1)).deleteBookById(anyInt());

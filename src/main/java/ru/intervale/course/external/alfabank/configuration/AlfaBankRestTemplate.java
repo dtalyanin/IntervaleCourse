@@ -1,6 +1,7 @@
 package ru.intervale.course.external.alfabank.configuration;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,8 @@ import ru.intervale.course.utils.interceptors.RestTemplateLogInterceptor;
 @Data
 public class AlfaBankRestTemplate {
     private String baseUrl;
+    @Autowired
+    private RestTemplateLogInterceptor interceptor;
 
     /**
      * Добавляет к RestTemplate базовый URL, ErrorHandler, Interceptor для обращения к API Альфа-банка
@@ -27,7 +30,7 @@ public class AlfaBankRestTemplate {
         return new RestTemplateBuilder()
                 .rootUri(baseUrl)
                 .errorHandler(new AlfaBankErrorHandler())
-                .interceptors(new RestTemplateLogInterceptor())
+                .interceptors(interceptor)
                 .build();
     }
 }
