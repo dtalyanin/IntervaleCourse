@@ -2,6 +2,7 @@ package ru.intervale.course.dao;
 
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.utils.mappers.BookMapper;
 
 import java.util.List;
 
@@ -28,6 +29,13 @@ public interface BookDao {
      * @return список книг заданного автора
      */
     List<BookDTO> getBooksByAuthor(String author);
+
+    /**
+     * Возвращает список книг с заданным названием
+     * @param name название для поиска в БД
+     * @return список книг с заданным названием
+     */
+    List<Book> getBooksByName(String name);
 
     /**
      * Добавляет новую запись книги в БД

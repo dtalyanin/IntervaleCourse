@@ -1,4 +1,4 @@
-package ru.intervale.course.external.openlibrary.configuration;
+package ru.intervale.course.external.alfabank.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -6,27 +6,27 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import ru.intervale.course.external.openlibrary.utils.OpenLibraryErrorHandler;
+import ru.intervale.course.external.alfabank.utils.AlfaBankErrorHandler;
 import ru.intervale.course.utils.interceptors.RestTemplateLogInterceptor;
 
 /**
- * RestTemplate для обращения к API Open Library
+ * RestTemplate для обращения к API Альфа-банка
  */
 @Configuration
-@ConfigurationProperties(prefix = "external.open-library")
+@ConfigurationProperties(prefix = "external.alfa-bank")
 @Data
-public class OpenLibraryRestTemplate {
+public class AlfaBankRestTemplate {
     private String baseUrl;
 
     /**
-     * Добавляет к RestTemplate базовый URL, ErrorHandler, Interceptor для обращения к API Open Library
+     * Добавляет к RestTemplate базовый URL, ErrorHandler, Interceptor для обращения к API Альфа-банка
      * @return сконфигурированный RestTemplate
      */
-    @Bean("OpenLibrary")
+    @Bean("AlfaBank")
     public RestTemplate restTemplate() {
         return new RestTemplateBuilder()
                 .rootUri(baseUrl)
-                .errorHandler(new OpenLibraryErrorHandler())
+                .errorHandler(new AlfaBankErrorHandler())
                 .interceptors(new RestTemplateLogInterceptor())
                 .build();
     }

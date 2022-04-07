@@ -2,6 +2,7 @@ package ru.intervale.course.service;
 
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
+import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.responses.BookLibraryResult;
 
 import java.util.List;
@@ -47,4 +48,21 @@ public interface BookService {
      * @return список книг указанного автора
      */
     List<BookDTO> getBooksByAuthor(String author);
+
+    /**
+     * Возвращает список книг с заданным названием и стоимостью в различных валютах согласно курсам на сегодняшний день,
+     * получаемым из API Альфа-банка
+     * @param title название книги для поиска
+     * @return список книг с заданным названием и стоимостью в различных валютах на сегодняшний день
+     */
+    List<BookDTO> getBooksByNameWithCurrentPrice(String title);
+
+    /**
+     * Возвращает список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     * @param title название книги для поиска
+     * @param currency код валюты согласно ISO
+     * @param period диапазон, в котором выполнить поиск курсов валют
+     * @return список книг с заданным названием и диапазоном их стоимости по дням в выбранной валюте
+     */
+    List<BookDTO> getBookByNameWithCurrencyPriceInRange(String title, String currency, int period);
 }
