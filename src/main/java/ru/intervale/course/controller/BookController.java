@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.intervale.course.model.Book;
 import ru.intervale.course.model.BookDTO;
-import ru.intervale.course.model.BookWithCurrency;
 import ru.intervale.course.model.responses.BookLibraryResult;
 import ru.intervale.course.service.BookService;
 

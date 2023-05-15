@@ -1,10 +1,11 @@
 package ru.intervale.course.external.openlibrary.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import ru.intervale.course.model.BookDTO;
 
 import java.util.ArrayList;
@@ -14,10 +15,10 @@ import java.util.List;
  * Получение данных по книгам из библиотеки Open Library
  */
 @Service
+@AllArgsConstructor
 public class OpenLibraryService {
     @Autowired
-    @Qualifier("OpenLibrary")
-    RestTemplate template;
+    private WebClient webClient;
 
     private final static String AUTHOR_SEARCH = "/search.json?author=";
     private final static String BOOK_SEARCH = "/api/books?bibkeys=OLID:";
@@ -30,13 +31,9 @@ public class OpenLibraryService {
      */
     public List<BookDTO> getBooksByAuthor(String author) {
         List<String> openLibraryBookIds = getOpenLibraryBookIds(author);
-        List<BookDTO> books = new ArrayList<>();
-        for (String olId: openLibraryBookIds) {
-            BookDTO book = template.getForObject( BOOK_SEARCH + olId + SEARCH_RESPONSE_FORMAT, BookDTO.class);
-            book.setId(olId);
-            books.add(book);
-        }
-        return books;
+        return Flux.fromIterable(openLibraryBookIds).flatMap(id -> webClient.get()
+                .uri(BOOK_SEARCH + id + SEARCH_RESPONSE_FORMAT)
+                .retrieve().bodyToMono(BookDTO.class).doOnNext(bookDTO -> bookDTO.setId(id))).collectList().block();
     }
 
     /**
@@ -45,7 +42,7 @@ public class OpenLibraryService {
      * @return список ID всех книг автора
      */
     private List<String> getOpenLibraryBookIds(String author) {
-        JsonNode node = template.getForObject(AUTHOR_SEARCH + author, JsonNode.class);
+        JsonNode node = webClient.get().uri(AUTHOR_SEARCH + author).retrieve().bodyToMono(JsonNode.class).block();
         List<String> openLibraryBookIds = new ArrayList<>();
         node.findValues("edition_key").forEach(arrayNode -> arrayNode.forEach(id -> openLibraryBookIds.add(id.asText())));
         return openLibraryBookIds;
